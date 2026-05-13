@@ -16,21 +16,29 @@
           justify-content: space-between;
         "
       >
-        <div style="width: 60px">
-          <!-- TODO: Add hidden class for production -->
-          <input id="date-time--dev" class="hidden" type="datetime-local" />
-        </div>
+        <button style="width: 75px; height: 40px" class="btn" id="btn-login">
+          👤
+        </button>
+
+        <input id="date-time--dev" class="hidden" type="datetime-local" />
+
         <span>STRANDED TRAINS BOARD</span>
         <div
           style="
-            width: 60px;
+            width: 75px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding: 2px;
+            padding: 0px;
           "
         >
-          <button class="btn" id="btn-add">+</button>
+          <button
+            style="width: 75px; height: 40px"
+            class="btn {{if_isLoggedIn}} {{else}}hidden{{/if_isLoggedIn}}"
+            id="btn-add"
+          >
+            +
+          </button>
         </div>
       </div>
     </header>
@@ -55,7 +63,7 @@
             </tr>
           </thead>
           <tbody>
-            {{strandedTrains_template}}
+            <!-- {{strandedTrains_template}}
             <tr data-database-id="{{id}}" class="stranded-train-row">
               <td class="td--headcode">{{headcode}}</td>
               <td class="td--location">{{location}}</td>
@@ -73,12 +81,42 @@
                 ><br />{{planB}}<br /><b>Plan C</b><br />{{planC}}
               </td>
             </tr>
-            {{/strandedTrains_template}}
+            {{/strandedTrains_template}} -->
           </tbody>
         </table>
       </div>
       <div></div>
     </main>
+
+    <!-- Modal Login -->
+    <div class="modal-backdrop hidden" id="modalLoginBackdrop">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalLoginTitle"
+      >
+        <header class="modal-header">
+          <h2 id="modalLoginTitle">Login</h2>
+          <button class="modal-close" id="closeModalLogin" aria-label="Close">
+            ×
+          </button>
+        </header>
+
+        <form class="modal-form modal-form--login" id="loginForm">
+          <div class="form-group">
+            <label for="input--username">Username</label>
+            <input type="text" id="input--username" name="username" />
+          </div>
+          <div class="form-group">
+            <label for="input--password">Password</label>
+            <input type="password" id="input--password" name="password" />
+          </div>
+          <button type="submit" class="btn">Login</button>
+        </form>
+      </div>
+    </div>
+
     <!-- Modal -->
     <div class="modal-backdrop hidden" id="modalBackdrop">
       <div
@@ -94,7 +132,11 @@
           </button>
         </header>
 
-        <form class="modal-form" data-mode="new" data-database-id="">
+        <form
+          class="modal-form modal-form--stranded-trains"
+          data-mode="new"
+          data-database-id=""
+        >
           <div class="form-group-row">
             <div class="form-group">
               <label

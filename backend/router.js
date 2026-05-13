@@ -12,6 +12,7 @@ const path = require("path");
 const viewController = require("./controllers/viewController.js");
 const dataController = require("./controllers/dataController.js");
 const templateEngine = require("./templateEngine.js");
+const auth = require("./auth.js");
 
 class Router {
   constructor() {}
@@ -30,13 +31,53 @@ class Router {
       // =========================
 
       if (req.url === "/" && req.method === "GET") {
+        const isLoggedIn = await auth.isLoggedIn(req);
+
         let template = await templateEngine.readFileUtf8(
           path.join(viewController.viewsPath, "index.html"),
         );
 
         const strandedTrains = await dataController.getActive();
 
-        await viewController.render(template, res, strandedTrains);
+        await viewController.render(template, res, {
+          strandedTrains,
+          isLoggedIn,
+        });
+      }
+
+      // =========================
+      // AUTH ROUTES
+      // =========================
+      // Login route
+      else if (req.url === "/api/login" && req.method === "POST") {
+        const body = await dataController.parseBody(req);
+
+        const sessionId = await auth.authenticate(body.username, body.password);
+
+        if (!sessionId) {
+          res.writeHead(401, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Invalid username or password",
+            }),
+          );
+        }
+
+        res.writeHead(200, {
+          "Set-Cookie": `sessionId=${sessionId}; HttpOnly; Path=/; SameSite=Lax`,
+          "Content-Type": "application/json",
+        });
+
+        res.end(JSON.stringify({ success: true }));
+      }
+
+      // Log out route
+      else if (req.url === "/api/logout" && req.method === "POST") {
+        auth.logout(req, res);
       }
 
       // =========================
@@ -78,8 +119,12 @@ class Router {
         res.end(JSON.stringify(data));
       }
 
-      // CREATE
+      // CREATE TODO:
       else if (req.url === "/api/stranded-trains" && req.method === "POST") {
+        if (!auth.requireAuth(req, res)) return;
+
+        console.log("Authenticated user:", user);
+
         const body = await dataController.parseBody(req);
 
         const result = await dataController.create(body);
@@ -96,11 +141,13 @@ class Router {
         );
       }
 
-      // UPDATE
+      // UPDATE TODO:
       else if (
         req.url.startsWith("/api/stranded-trains/") &&
         req.method === "PUT"
       ) {
+        console.log("Cookie header:", req.headers.cookie);
+        if (!auth.requireAuth(req, res)) return;
         const id = req.url.split("/").pop();
 
         const body = await dataController.parseBody(req);
@@ -119,11 +166,12 @@ class Router {
         );
       }
 
-      // DELETE
+      // DELETE TODO:
       // else if (
       //   req.url.startsWith("/api/stranded-trains/") &&
       //   req.method === "DELETE"
       // ) {
+      //   if (!auth.requireAuth(req, res)) return;
       //   const id = req.url.split("/").pop();
 
       //   const result = await dataController.delete(id);

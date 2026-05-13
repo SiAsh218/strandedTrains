@@ -24,7 +24,8 @@ class ViewController {
       if (template == null) throw new Error("HTML template is blank");
 
       const html = await templateEngine.getFinalHTML(template, {
-        strandedTrains: data,
+        strandedTrains: data.strandedTrains,
+        isLoggedIn: data.isLoggedIn,
       });
 
       res.writeHead(200, { "Content-Type": "text/html" });

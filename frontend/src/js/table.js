@@ -167,7 +167,7 @@ class Table {
 
           <td>
             <button
-              class="btn-delete ${row.showDeletionFlag ? "" : "hidden"}"
+              class="btn-delete ${row.showDeletionFlag ? "" : "hidden"} ${this.hideEditButtons() ? "hidden" : ""}"
               data-index="${row.id}"
               aria-label="Delete row"
             >
@@ -193,6 +193,11 @@ class Table {
 
     // Inject generated markup into DOM
     tableBody.innerHTML = markup;
+  }
+
+  // Utility method to hide edit buttons for users who are not logged in
+  hideEditButtons() {
+    return document.getElementById("btn-add").classList.contains("hidden");
   }
 
   isDevMode() {
