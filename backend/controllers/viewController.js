@@ -6,7 +6,7 @@
 // =========================
 // Import dependencies
 // =========================
-const templateEngine = require("../TemplateEngine.js");
+const templateEngine = require("../templateEngine.js");
 
 class ViewController {
   constructor() {
