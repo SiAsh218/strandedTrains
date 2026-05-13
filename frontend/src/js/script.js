@@ -1,16 +1,32 @@
+// =========================
+// Stranded Trains - Frontend Script
+// This file contains the main JavaScript logic for the frontend,
+// including event listeners and functions for handling user interactions.
+// =========================
+
+// =========================
+// Import dependencies
+// =========================
 import myAlert from "./alert";
 import myTable from "./table";
 import myForm from "./form";
 
-// GLOBAL VARIABLES
+// =========================
+// DOM ELEMENTS
+// =========================
 const form = document.querySelector(".modal-form");
 const statusSelect = form.querySelector("#input--status");
 const strandedAtInput = form.querySelector("#input--stranded-at");
 const rescuedAtInput = form.querySelector("#input--rescued-at");
-// const strandedTrains = [];
 const devTimeInput = document.getElementById("date-time--dev");
 
-// EVENT LISTENERS
+// =========================
+// Event Listeners
+// =========================
+
+// =========================
+// Form submit listener - handles both create and update based on form mode
+// =========================
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const form = e.target.closest("form");
@@ -43,6 +59,9 @@ form.addEventListener("submit", async (e) => {
   closeModal();
 });
 
+// =========================
+// Click listener for table rows and buttons
+// =========================
 document.addEventListener("click", async (e) => {
   const closeModal = e.target.closest(".modal-close");
 
@@ -77,9 +96,6 @@ document.addEventListener("click", async (e) => {
           body: JSON.stringify({ deleted: true }),
         });
 
-        // TODO: delete from database
-        // strandedTrains.splice(index, 1);
-        // myTable.renderStrandedTrainsTable(strandedTrains);
         updateDurations();
       }
     }
@@ -90,7 +106,6 @@ document.addEventListener("click", async (e) => {
   if (row) {
     const id = row.dataset.databaseId;
 
-    // TODO: get data for this train from database using id, not index
     const strandedTrain = await getStrandedTrainById(id);
 
     // const data = strandedTrains[index];
@@ -102,6 +117,9 @@ document.addEventListener("click", async (e) => {
   }
 });
 
+// =========================
+// Change listener for status select - enables/disables rescuedAt input based on status
+// =========================
 statusSelect.addEventListener("change", (e) => {
   const value = statusSelect.value;
   if (value === "Rescued") {
@@ -113,14 +131,18 @@ statusSelect.addEventListener("change", (e) => {
   }
 });
 
+// =========================
+// Change listener for dev time input - updates durations in table based on selected time
+// =========================
 devTimeInput.addEventListener("change", async () => {
   const strandedTrains = await getStrandedTrains();
 
   myTable.renderStrandedTrainsTable(strandedTrains);
 });
 
-// FUNCTIONS
-
+// =========================
+// Functions
+// =========================
 const closeModal = () => {
   document.getElementById("modalBackdrop").classList.add("hidden");
   form.reset();
@@ -151,8 +173,6 @@ const addStrandedTrain = async (mode, data) => {
       },
       body: JSON.stringify(data),
     });
-
-    // strandedTrains.push(data);
   } else {
     const id = form.dataset.databaseId;
 
