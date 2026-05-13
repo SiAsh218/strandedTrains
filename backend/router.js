@@ -54,7 +54,7 @@ class Router {
       }
 
       // GET ALL
-      else if (req.url === "/api/stranded-trains" && req.method === "GET") {
+      else if (req.url === "/api/all-stranded-trains" && req.method === "GET") {
         const data = await dataController.getAll();
         res.writeHead(200, {
           "Content-Type": "application/json",
