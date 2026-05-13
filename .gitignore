@@ -1,3 +1,4 @@
 node_modules
 dist
+backend/database/app.db
 
