@@ -5,6 +5,8 @@
 const config = require("./config.json");
 const App = require("./backend/app.js");
 
-const app = new App({ port: config.port });
+const port = process.env.PORT || config.port;
+
+const app = new App({ port: port });
 
 app.start();
