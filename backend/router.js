@@ -43,9 +43,19 @@ class Router {
       // DATA ROUTES
       // =========================
 
-      // GET ALL
+      // GET ALL Active
       else if (req.url === "/api/stranded-trains" && req.method === "GET") {
         const data = await dataController.getActive();
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        res.end(JSON.stringify(data));
+      }
+
+      // GET ALL
+      else if (req.url === "/api/stranded-trains" && req.method === "GET") {
+        const data = await dataController.getAll();
         res.writeHead(200, {
           "Content-Type": "application/json",
         });
