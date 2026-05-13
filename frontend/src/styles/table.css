@@ -1,0 +1,87 @@
+/* Core Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse; /* Merges borders for a cleaner look */
+  font-family: "Segoe UI", Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds modern depth */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Header Styling */
+thead tr {
+  background-color: #009879; /* Sleek dark navy */
+  color: #ffffff;
+  text-align: left;
+}
+
+tbody tr {
+  cursor: pointer;
+}
+
+th,
+td {
+  padding: 7px 10px;
+}
+
+/* --- Zebra Striping --- */
+/* Styles every even row */
+tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Styles every odd row */
+tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Hover Effect for Interactivity */
+tbody tr:hover {
+  background-color: #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+/* Modern Status Badge Style */
+.td--red-bold {
+  font-weight: bold;
+  color: #dc2626;
+}
+
+.td--yellow-bold {
+  font-weight: bold;
+  color: #ca8a04;
+}
+
+@keyframes flash-red {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: red;
+  }
+  100% {
+    background-color: inherit;
+  }
+}
+
+.flashing-red {
+  animation: flash-red 1s infinite;
+  font-weight: bold;
+}
+
+@keyframes flash-amber {
+  0% {
+    background-color: inherit;
+  }
+  50% {
+    background-color: #ffbf00;
+  } /* Standard Amber Hex Code */
+  100% {
+    background-color: inherit;
+  }
+}
+
+.flashing-amber {
+  animation: flash-amber 1s infinite;
+  font-weight: bold;
+}

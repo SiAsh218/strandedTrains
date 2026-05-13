@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "ip": "0.0.0.0"
+  },
+  "prod": {
+    "ip": "localhost"
+  },
+  "port": 3000,
+  "strandedTrains": [],
+  "resetDatabase": false
+}

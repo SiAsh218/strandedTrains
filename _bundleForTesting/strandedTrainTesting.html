@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      header {
+        display: flex;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        padding: 0.2rem;
+      }
+
+      /* Core Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse; /* Merges borders for a cleaner look */
+        font-family: "Segoe UI", Arial, sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds modern depth */
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      /* Header Styling */
+      thead tr {
+        background-color: #009879; /* Sleek dark navy */
+        color: #ffffff;
+        text-align: left;
+      }
+
+      tbody tr {
+        cursor: pointer;
+      }
+
+      th,
+      td {
+        padding: 7px 10px;
+      }
+
+      /* --- Zebra Striping --- */
+      /* Styles every even row */
+      tbody tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+
+      /* Styles every odd row */
+      tbody tr:nth-child(odd) {
+        background-color: #ffffff;
+      }
+
+      /* Hover Effect for Interactivity */
+      tbody tr:hover {
+        background-color: #f1f5f9;
+        transition: background-color 0.2s ease;
+      }
+
+      /* Modern Status Badge Style */
+      .td--red-bold {
+        font-weight: bold;
+        color: #dc2626;
+      }
+
+      .td--yellow-bold {
+        font-weight: bold;
+        color: #ca8a04;
+      }
+
+      @keyframes flash-red {
+        0% {
+          background-color: inherit;
+        }
+        50% {
+          background-color: red;
+        }
+        100% {
+          background-color: inherit;
+        }
+      }
+
+      .flashing-red {
+        animation: flash-red 1s infinite;
+        font-weight: bold;
+      }
+
+      @keyframes flash-amber {
+        0% {
+          background-color: inherit;
+        }
+        50% {
+          background-color: #ffbf00;
+        } /* Standard Amber Hex Code */
+        100% {
+          background-color: inherit;
+        }
+      }
+
+      .flashing-amber {
+        animation: flash-amber 1s infinite;
+        font-weight: bold;
+      }
+
+      .btn {
+        appearance: none;
+        border: none;
+        border-radius: 12px;
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background: #009879;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.15s ease;
+      }
+
+      .btn:hover {
+        transform: scale(0.95);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn:focus-visible {
+        outline: 3px solid rgba(99, 102, 241, 0.6);
+        outline-offset: 2px;
+      }
+
+      .btn-delete {
+        background: none;
+        color: #009879;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-delete:hover {
+        color: #007700;
+      }
+
+      /* Backdrop */
+      .modal-backdrop {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      /* Modal shell */
+      .modal {
+        width: min(90vw, 1200px);
+        min-width: 500px;
+        max-height: 90vh;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        font-family: "Segoe UI", Arial, sans-serif;
+        animation: modalIn 0.2s ease;
+        overflow: hidden;
+      }
+
+      /* Header */
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        background: #009879;
+        color: #ffffff;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Close */
+      .modal-close {
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: #ffffff;
+        font-size: 22px;
+        cursor: pointer;
+        line-height: 1;
+        padding: 4px 8px;
+      }
+
+      /* Form body */
+      .modal-form {
+        padding: 20px;
+        flex: 1;
+        min-height: 0;
+        overflow-y: scroll;
+      }
+
+      /* Form groups */
+      .form-group-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .form-group {
+        display: flex;
+        min-width: 200px;
+        flex: 4;
+        flex-direction: column;
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+      }
+
+      .form-group input,
+      .form-group select {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #009879;
+        box-shadow: 0 0 0 2px rgba(0, 152, 121, 0.2);
+      }
+
+      .modal textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-family: inherit;
+        resize: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .modal textarea:focus {
+        outline: none;
+        border-color: #009879;
+        box-shadow: 0 0 0 2px rgba(0, 152, 121, 0.2);
+      }
+
+      /* Footer */
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      /* Secondary button variant */
+      .modal .btn-secondary {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      .modal .btn-secondary:hover {
+        transform: scale(0.95);
+      }
+
+      /* Chrome, Safari, Edge, Opera */
+      .modal .input-hide-number-arrows::-webkit-outer-spin-button,
+      .modal .input-hide-number-arrows::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      .modal .input-hide-number-arrows[type="number"] {
+        -moz-appearance: textfield; /* For Firefox */
+        appearance: textfield; /* Standard property */
+      }
+
+      /* Animation */
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Apply to every element */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* Base page setup */
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f4;
+      }
+
+      /* Ensure images don't overflow their containers */
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      label.required {
+        position: relative;
+      }
+
+      label.required::before {
+        content: "*";
+        color: black;
+        font-weight: bold;
+        position: absolute;
+        left: -10px; /* adjust as needed */
+      }
+    </style>
+    <title>Stranded Trains Board</title>
+  </head>
+  <body>
+    <header>
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="width: 60px">
+          <!-- TODO: Add hidden class for production -->
+          <input id="date-time--dev" class="hidden" type="datetime-local" />
+        </div>
+        <span>STRANDED TRAINS BOARD</span>
+        <div
+          style="
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 2px;
+          "
+        >
+          <button class="btn" id="btn-add">+</button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div style="padding: 0 5px">
+        <table class="table--stranded-trains">
+          <thead>
+            <tr>
+              <th style="width: 50px">Head Code</th>
+              <th style="width: 150px">Location</th>
+              <th style="width: 120px">Came To A Stand At</th>
+              <th style="width: 100px">Duration</th>
+              <th style="width: 100px">Contact</th>
+              <th style="width: 100px">Status</th>
+              <th style="width: 100px">Passenger Loading</th>
+              <th style="width: 100px">Toilets</th>
+              <th style="width: 100px">Vulnerable People</th>
+              <th style="width: 100px">TOLO</th>
+              <th style="width: 100px">Champion</th>
+              <th>Plan</th>
+              <th style="width: 40px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 
+            {{strandedTrains_template}}
+            <tr>
+              <td>{{headcode}}</td>
+              <td>{{location}}</td>
+              <td>{{strandedAt}}</td>
+              <td>{{duration}}</td>
+              <td>{{contact}}</td>
+              <td>{{status}}</td>
+              <td>{{passengerLoading}}</td>
+              <td>{{toiletsWorking}}</td>
+              <td>{{vulnerablePeople}}</td>
+              <td>{{riskAssessment}}</td>
+              <td>{{plan}}</td>
+            </tr>
+            {{/strandedTrains_template}}
+             -->
+          </tbody>
+        </table>
+      </div>
+      <div></div>
+    </main>
+    <!-- Modal -->
+    <div class="modal-backdrop hidden" id="modalBackdrop">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <header class="modal-header">
+          <h2 id="modalTitle">Add Stranded Train</h2>
+          <button class="modal-close" id="closeModal" aria-label="Close">
+            ×
+          </button>
+        </header>
+
+        <form class="modal-form" data-mode="new" data-index="">
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                class="required"
+                for="input--headcode"
+                data-error="Headcode is a required field"
+                >Headcode</label
+              >
+              <input type="text" id="input--headcode" name="headcode" />
+            </div>
+
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Location is a required field"
+                for="input--location"
+                >Location</label
+              >
+              <input
+                type="text"
+                id="input--location"
+                placeholder="Either exact location or between X and Y"
+                name="location"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--location-w3w">Location What3Words</label>
+              <input type="text" id="input--location-w3w" name="location-w3w" />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--traction">Traction</label>
+              <select id="input--traction" name="traction">
+                <option value=""></option>
+                <option value="Diesel Only">Diesel Only</option>
+                <option value="Electric Only">Electric Only</option>
+                <option value="Battery Only">Battery Only</option>
+                <option value="Bi-Mode">Bi-Mode</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Stranded At is a required field"
+                for="input--stranded-at"
+                >Came To A Stand At</label
+              >
+              <input
+                type="datetime-local"
+                id="input--stranded-at"
+                name="stranded-at"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--ccil-ref">CCIL Ref</label>
+              <input
+                class="input-hide-number-arrows"
+                type="text"
+                inputmode="numeric"
+                id="input--ccil-ref"
+                name="ccil-ref"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                data-error="Contact On Train is a required field"
+                class="required"
+                for="input--contact"
+                >Contact On Train</label
+              >
+              <input type="text" id="input--contact" name="contact" />
+            </div>
+
+            <div class="form-group">
+              <label for="input--contact-no">Contact On Train No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--contact-no"
+                name="contact-no"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--responder">Responding Contact</label>
+              <input type="text" id="input--responder" name="responder" />
+            </div>
+
+            <div class="form-group">
+              <label for="input--responder-no">Responding Contact No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--responder-no"
+                name="responder-no"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Status is a required field"
+                for="input--status"
+                >Status</label
+              >
+              <select id="input--status" name="status">
+                <option value=""></option>
+                <option value="Stranded">Stranded</option>
+                <option value="Trapped">Trapped</option>
+                <option value="Evacuation">Evacuation</option>
+                <option value="Rescued">On The Move</option>
+              </select>
+            </div>
+
+            <div
+              class="form-group form-group--rescued-at"
+              id="form-group--rescued-at"
+            >
+              <label for="input--rescued-at">On The Move At</label>
+              <input
+                type="datetime-local"
+                id="input--rescued-at"
+                disabled
+                name="rescued-at"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--tolo">TOLO Assigned</label>
+              <select id="input--tolo" name="tolo">
+                <option value=""></option>
+                <option value="Assigned">Assigned</option>
+                <option value="On Route">On Route</option>
+                <option value="Not Assigned">Not Assigned</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--passenger-loading">Passenger Loading</label>
+              <select id="input--passenger-loading" name="passenger-loading">
+                <option value=""></option>
+                <option value="Low">Low - Plenty Of Seats</option>
+                <option value="Medium">
+                  Medium - All Passenegers Have Seats
+                </option>
+                <option value="High">
+                  High - Some People Stood In Vestibules
+                </option>
+                <option value="Very High">
+                  Very High - People Standing Throughout
+                </option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--passenger-count">Passenger Count</label>
+              <input
+                class="input-hide-number-arrows"
+                type="text"
+                inputmode="numeric"
+                id="input--passenger-count"
+                name="passenger-count"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--vulnerable-people">Vulnerable People</label>
+              <select id="input--vulnerable-people" name="vulnerable-people">
+                <option value=""></option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3+">3+</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--toilets-working">Toilets Working</label>
+              <select id="input--toilets-working" name="toilets-working">
+                <option value=""></option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--number-of-staff"
+                >Number of Staff Onboard</label
+              >
+              <input
+                class="input-hide-number-arrows"
+                type="text"
+                inputmode="numeric"
+                id="input--number-of-staff"
+                name="number-of-staff"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--mood-onboard">Mood Onboard</label>
+              <input type="text" id="input--mood-onboard" name="mood-onboard" />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--heating-required">Heating</label>
+              <select id="input--heating-required" name="heating-required">
+                <option value=""></option>
+                <option value="Fully Operational">Fully Operational</option>
+                <option value="Not Operational">Not Operational</option>
+                <option value="Partially Operational">
+                  Partially Operational
+                </option>
+                <option value="Not Required">Not Required</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--air-cooling-required">Air Cooling</label>
+              <select
+                id="input--air-cooling-required"
+                name="air-cooling-required"
+              >
+                <option value=""></option>
+                <option value="Fully Operational">Fully Operational</option>
+                <option value="Not Operational">Not Operational</option>
+                <option value="Partially Operational">
+                  Partially Operational
+                </option>
+                <option value="Not Required">Not Required</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--lighting">Lighting</label>
+              <select id="input--lighting" name="lighting">
+                <option value=""></option>
+                <option value="Fully Operational">Fully Operational</option>
+                <option value="Not Operational">Not Operational</option>
+                <option value="Partially Operational">
+                  Partially Operational
+                </option>
+                <option value="Not Required">Not Required</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--stranded-train-champion"
+                >Stranded Train Champion</label
+              >
+              <input
+                type="text"
+                id="input--stranded-train-champion"
+                name="stranded-train-champion"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--champion-no">Champion No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--champion-no"
+                name="champion-no"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--plan-a">Plan A</label>
+              <textarea id="input--plan-a" name="plan-a" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="input--plan-b">Plan B</label>
+              <textarea id="input--plan-b" name="plan-b" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="input--plan-c">Plan C</label>
+              <textarea id="input--plan-c" name="plan-c" rows="4"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--other-affected-trains"
+                >Other Affected Trains</label
+              >
+              <textarea
+                id="input--other-affected-trains"
+                name="other-affected-trains"
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="input--additional-information"
+                >Additional Information</label
+              >
+              <textarea
+                id="input--additional-information"
+                name="additional-information"
+                rows="4"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Last Contact Time is a required field"
+                for="input--last-contact-time"
+                >Last Contact Time</label
+              >
+              <input
+                type="datetime-local"
+                id="input--last-contact-time"
+                name="last-contact-time"
+              />
+            </div>
+
+            <div class="form-group">
+              <label
+                for="input--last-contact-person"
+                class="required"
+                data-error="Last Contact Person is a required field"
+                >Last Contact Person</label
+              >
+              <input
+                type="text"
+                id="input--last-contact-person"
+                name="last-contact-person"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--contact-record">Contact Record</label>
+              <textarea
+                id="input--contact-record"
+                name="contact-record"
+                rows="4"
+                disabled
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div
+              class="form-group hidden form-group--priority"
+              id="form-group--priority"
+            >
+              <label for="input--priority">Priority</label>
+              <input
+                type="number"
+                min="1"
+                id="input--priority"
+                name="priority"
+                min="1"
+              />
+            </div>
+
+            <div
+              class="form-group hidden form-group--last-updated"
+              id="form-group--last-updated"
+            >
+              <label for="input--last-updated">Last Updated</label>
+              <input
+                type="text"
+                id="input--last-updated"
+                name="last-updated"
+                disabled
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <footer></footer>
+    <script>
+      /**
+       * Alert utility class for rendering temporary alert banners
+       * and custom confirm dialogs in the DOM.
+       *
+       * Usage:
+       *   import Alert from "./Alert.js";
+       *   Alert.render("Saved successfully", "success", 3);
+       *   const confirmed = await Alert.showConfirm("Delete item?");
+       */
+      class Alert {
+        /**
+         * Creates a new Alert instance.
+         * `id` is used to generate unique DOM element IDs.
+         */
+        constructor() {
+          /**
+           * Incrementing identifier used to create unique element IDs.
+           * @type {number}
+           */
+          this.id = 0;
+        }
+
+        /**
+         * Render a custom alert banner at the top of the screen.
+         *
+         * Alert types:
+         * - "error"   → red
+         * - "success" → green
+         * - "info"    → yellow
+         *
+         * @param {string} [message="Something has gone wrong"]
+         * The message to display inside the alert banner.
+         *
+         * @param {"error"|"success"|"info"} [type="error"]
+         * The visual style of the alert.
+         *
+         * @param {number} [time=3]
+         * Duration (in seconds) before the alert automatically disappears.
+         *
+         * @returns {void}
+         */
+        render(message = "Something has gone wrong", type = "error", time = 3) {
+          // Determine background colour based on type
+          const fill = this.getAlertColour(type);
+
+          // Build alert markup with unique ID
+          this.markup = `
+      <div class="alert"
+           style="position: fixed; top: 0; z-index: 9999;
+                  width: 100%; display: flex; justify-content: center;
+                  background-color: ${fill};
+                  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5);"
+           id="alert--${this.id}">
+        <span style="padding: 5px; font-size: 18px; font-weight: bold;">
+          ${message}
+        </span>
+      </div>`;
+
+          const id = this.id;
+
+          // Ensure only one alert is shown at a time
+          this.removeAllAlerts();
+
+          // Insert alert into DOM
+          document.body.insertAdjacentHTML("afterbegin", this.markup);
+
+          // Automatically remove alert after specified time
+          setTimeout(() => {
+            this.removeAlert(id);
+          }, time * 1000);
+
+          // Increment ID for next alert
+          this.id++;
+        }
+
+        /**
+         * Returns the hex colour associated with a given alert type.
+         *
+         * @param {"error"|"success"|"info"} type
+         * @returns {string} Hex colour string
+         */
+        getAlertColour(type) {
+          switch (type) {
+            case "error":
+              return "#f64f5f";
+            case "success":
+              return "#77DD77";
+            case "info":
+              return "#FDFD96";
+            default:
+              return "#f64f5f"; // fallback to error colour
+          }
+        }
+
+        /**
+         * Remove a specific alert from the DOM by ID.
+         *
+         * @param {number|string} id
+         * The numeric ID used when rendering the alert.
+         *
+         * @returns {void}
+         */
+        removeAlert(id) {
+          const element = document.getElementById(`alert--${id}`);
+          if (element) element.remove();
+        }
+
+        /**
+         * Remove all currently displayed alerts from the DOM.
+         *
+         * @returns {void}
+         */
+        removeAllAlerts() {
+          document
+            .querySelectorAll(".alert")
+            .forEach((alert) => alert.remove());
+        }
+
+        /**
+         * Display a custom confirmation dialog.
+         *
+         * This method returns a Promise that resolves:
+         * - `true`  → user clicked confirm
+         * - `false` → user clicked cancel
+         *
+         * Example:
+         *   const confirmed = await Alert.showConfirm("Delete item?");
+         *   if (confirmed) deleteItem();
+         *
+         * @param {string} [message="Are you sure?"]
+         * Message displayed inside the confirm dialog.
+         *
+         * @param {string} [confirmText="OK"]
+         * Text shown on the confirm button.
+         *
+         * @param {string} [cancelText="Cancel"]
+         * Text shown on the cancel button.
+         *
+         * @returns {Promise<boolean>}
+         */
+        async showConfirm(
+          message = "Are you sure?",
+          confirmText = "OK",
+          cancelText = "Cancel",
+        ) {
+          const id = this.id++;
+
+          // Overlay + modal markup
+          const markup = `
+      <div id="confirm-overlay--${id}"
+           style="position: fixed; inset: 0;
+                  background: rgba(0,0,0,0.4);
+                  display: flex; justify-content: center;
+                  align-items: center; z-index: 10000;">
+
+        <div style="background: white; padding: 20px;
+                    border-radius: 6px; min-width: 300px;
+                    text-align: center;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+
+          <p style="margin-bottom: 20px;">${message}</p>
+
+          <div style="display: flex; justify-content: space-around;">
+            <button class="btn"
+                    id="confirm-true--${id}"
+                    style="padding:6px 12px;">
+              ${confirmText}
+            </button>
+
+            <button class="btn"
+                    id="confirm-false--${id}"
+                    style="padding:6px 12px;">
+              ${cancelText}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+          // Insert modal into DOM
+          document.body.insertAdjacentHTML("beforeend", markup);
+
+          const overlay = document.getElementById(`confirm-overlay--${id}`);
+          const confirmBtn = document.getElementById(`confirm-true--${id}`);
+          const cancelBtn = document.getElementById(`confirm-false--${id}`);
+
+          // Return a promise that resolves based on button clicked
+          const result = await new Promise((resolve) => {
+            const cleanup = (value) => {
+              overlay.remove();
+              resolve(value);
+            };
+
+            confirmBtn.addEventListener("click", () => cleanup(true));
+            cancelBtn.addEventListener("click", () => cleanup(false));
+          });
+
+          return result;
+        }
+      }
+
+      const myAlert = new Alert();
+
+      /**
+       * Table utility class responsible for rendering
+       * the Stranded Trains table and handling related
+       * date/time formatting logic.
+       *
+       * Usage:
+       *   import Table from "./Table.js";
+       *   Table.renderStrandedTrainsTable(data);
+       */
+      class Table {
+        /**
+         * Creates a new Table instance.
+         * Caches reference to the stranded trains table element.
+         */
+        constructor() {
+          /**
+           * Reference to the stranded trains table element.
+           * @type {HTMLTableElement|null}
+           */
+          this.tableStrandedTrains = document.querySelector(
+            ".table--stranded-trains",
+          );
+        }
+
+        /**
+         * Render the stranded trains table body using provided data.
+         *
+         * @param {Array<Object>} data
+         * Array of stranded train objects.
+         *
+         * Expected object structure:
+         * {
+         *   headcode: string,
+         *   location: string,
+         *   strandedAt: string|Date,
+         *   rescuedAt?: string|Date,
+         *   status: string,
+         *   passengerLoading: string,
+         *   toiletsWorking: string,
+         *   vulnerablePeople: string,
+         *   riskAssessment: string,
+         *   plan: string,
+         *   contact: string,
+         *   showDeletionFlag: boolean
+         * }
+         *
+         * @returns {void}
+         */
+        renderStrandedTrainsTable(data) {
+          if (!this.tableStrandedTrains) return;
+
+          const tableBody = this.tableStrandedTrains.querySelector("tbody");
+          if (!tableBody) return;
+
+          // Clear existing rows
+          tableBody.innerHTML = "";
+
+          let markup = "";
+
+          // Build table rows
+          for (let i = 0; i < data.length; i++) {
+            const row = data[i];
+
+            const strandedFormatted = this.formatDateTime(row.strandedAt);
+            const rescuedFormatted = this.formatDateTime(row.rescuedAt);
+
+            // If rescued → calculate diff between stranded and rescued
+            // If not rescued → calculate diff between stranded and now
+            const duration =
+              row.status === "Rescued"
+                ? this.timeDiff(strandedFormatted, rescuedFormatted)
+                : !this.isDevMode()
+                  ? this.timeDiff(strandedFormatted)
+                  : this.timeDiff(
+                      strandedFormatted,
+                      this.formatDateTime(this.getDevTime()),
+                    );
+
+            let durationRag = "";
+
+            const lastContactFormatted = this.formatDateTime(row.lastContact);
+            const lastContactDuration = !this.isDevMode()
+              ? this.timeDiff(lastContactFormatted)
+              : this.timeDiff(
+                  lastContactFormatted,
+                  this.formatDateTime(this.getDevTime()),
+                );
+            const lastContactMinutes =
+              this.durationToMinutes(lastContactDuration);
+
+            const lastContactRag =
+              lastContactMinutes >= 30
+                ? "flashing-red"
+                : lastContactMinutes >= 20
+                  ? "flashing-amber"
+                  : "";
+
+            const durationMinutes = this.durationToMinutes(duration);
+            if (durationMinutes >= 60) {
+              durationRag = "td--red-bold";
+            } else if (durationMinutes >= 30) {
+              durationRag = "td--yellow-bold";
+            }
+
+            let loadingRag = "";
+
+            switch (row.passengerLoading) {
+              case "Very High":
+                loadingRag = "td--red-bold";
+                break;
+              case "High":
+                loadingRag = "td--red-bold";
+                break;
+              case "Medium":
+                loadingRag = "td--yellow-bold";
+                break;
+              default:
+                loadingRag = "";
+            }
+
+            let vulnerableRag = "";
+
+            switch (row.vulnerablePeople) {
+              case "1":
+                vulnerableRag = "td--yellow-bold";
+                break;
+              case "2":
+                vulnerableRag = "td--red-bold";
+                break;
+              case "3+":
+                vulnerableRag = "td--red-bold";
+                break;
+              default:
+                vulnerableRag = "";
+            }
+
+            markup += `
+        <tr class="table-row" id="row-${i}">
+         
+          <td>${row.headcode}</td>
+          <td>${row.location}</td>
+          <td>${strandedFormatted}</td>
+          <td class="${durationRag}">${duration}</td>
+          <td class="${lastContactRag}">${row.contact}</td>
+
+          <td class="${
+            row.status === "Stranded" || row.status === "Trapped"
+              ? "td--red-bold"
+              : ""
+          }">${row.status}</td>
+
+          <td class="${loadingRag}">${row.passengerLoading}</td>
+
+          <td class="${
+            row.toiletsWorking === "No" ? "td--red-bold" : ""
+          }">${row.toiletsWorking}</td>
+
+          <td class="${vulnerableRag}">${row.vulnerablePeople}</td>
+
+          <td>${row.tolo}</td>
+          <td>${row.strandedTrainChampion}</td>
+          <td>${row.planA ? `<b>Plan A</b><br>${row.planA.trim()}<br>` : ""}
+              ${row.planB ? `<b>Plan B</b><br>${row.planB.trim()}<br>` : ""}
+              ${row.planC ? `<b>Plan C</b><br>${row.planC.trim()}` : ""}</td>
+          </td>
+
+          <td>
+            <button
+              class="btn-delete ${row.showDeletionFlag ? "" : "hidden"}"
+              data-index="${i}"
+              aria-label="Delete row"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 24 24"
+                   width="22"
+                   height="22"
+                   class="icon-trash-outline"
+                   aria-hidden="true">
+                <path
+                  d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13M10 11v6M14 11v6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </td>
+        </tr>`;
+          }
+
+          // Inject generated markup into DOM
+          tableBody.innerHTML = markup;
+        }
+
+        isDevMode() {
+          return !document
+            .getElementById("date-time--dev")
+            .classList.contains("hidden");
+        }
+
+        getDevTime() {
+          return document.getElementById("date-time--dev").value;
+        }
+
+        /**
+         * Convert a duration string (e.g. "3h 25m") into total minutes.
+         *
+         * @param {string} input - Duration string in format "Xh Ym"
+         * @returns {number} Total minutes (0 if invalid)
+         */
+        durationToMinutes(input) {
+          if (!input) return 0;
+
+          const match = input.match(/(\d+)h\s*(\d+)m/);
+          if (!match) return 0;
+
+          const hours = parseInt(match[1], 10);
+          const minutes = parseInt(match[2], 10);
+
+          return hours * 60 + minutes;
+        }
+
+        /**
+         * Format a date/time input into:
+         * "dd MMM yyyy HH:mm" (e.g. "05 Feb 2026 14:32")
+         *
+         * @param {string|Date|null|undefined} input
+         * @returns {string} Formatted date string or empty string if invalid
+         */
+        formatDateTime(input) {
+          if (!input) return "";
+
+          const date = new Date(input);
+          if (isNaN(date)) return "";
+
+          const day = String(date.getDate()).padStart(2, "0");
+          const month = date.toLocaleString("en-GB", { month: "short" });
+          const year = date.getFullYear();
+          const hours = String(date.getHours()).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
+
+          return `${day} ${month} ${year} ${hours}:${minutes}`;
+        }
+
+        /**
+         * Calculate time difference between two formatted date strings.
+         *
+         * If only input1 is provided, difference is calculated
+         * between input1 and the current time.
+         *
+         * Output format:
+         *   "Xh Ym"
+         *
+         * @param {string} input1 Formatted date string
+         * @param {string|null} [input2=null] Optional end date
+         * @returns {string} Duration string or empty string if invalid
+         */
+        timeDiff(input1, input2 = null) {
+          if (!input1) return "";
+
+          /**
+           * Parses a formatted date string ("dd MMM yyyy HH:mm")
+           * into a JavaScript Date object.
+           *
+           * @param {string} input
+           * @returns {Date|null}
+           */
+          const parseDate = (input) => {
+            if (!input) return null;
+
+            const parts = input.trim().split(/\s+/);
+            if (parts.length !== 4) return null;
+
+            const [day, month, year, time] = parts;
+            const [hours, minutes] = time.split(":").map(Number);
+
+            if (isNaN(hours) || isNaN(minutes)) return null;
+
+            // Month numeric (dd mm yyyy)
+            if (!isNaN(month)) {
+              return new Date(
+                Number(year),
+                Number(month) - 1,
+                Number(day),
+                hours,
+                minutes,
+              );
+            }
+
+            // Month string (dd mmm yyyy)
+            return new Date(`${day} ${month} ${year} ${hours}:${minutes}`);
+          };
+
+          const startDate = parseDate(input1);
+          const endDate = input2 ? parseDate(input2) : new Date();
+
+          if (!startDate || !endDate) return "";
+
+          let diffMs = endDate - startDate;
+          const isNegative = diffMs < 0;
+          diffMs = Math.abs(diffMs);
+
+          const totalMinutes = Math.floor(diffMs / 60000);
+          const diffHours = Math.floor(totalMinutes / 60);
+          const diffMinutes = totalMinutes % 60;
+
+          return `${isNegative ? "- " : ""}${diffHours}h ${diffMinutes}m`;
+        }
+      }
+
+      const myTable = new Table();
+
+      class Form {
+        constructor() {}
+
+        getFormMode(form) {
+          return form.dataset.mode;
+        }
+
+        setFormMode(form, mode) {
+          form.dataset.mode = mode;
+        }
+
+        setIndex(form, index) {
+          form.dataset.index = index;
+        }
+
+        lastUpdatedInfoChanged() {
+          const timeChanged = this.hasInputChanged(
+            document.getElementById("input--last-contact-time"),
+          );
+          const personChanged = this.hasInputChanged(
+            document.getElementById("input--last-contact-person"),
+          );
+          return timeChanged || personChanged;
+        }
+
+        formatLastUpdatedInfo() {
+          const time = this.getInputValuebyId("input--last-contact-time");
+          const person = this.getInputValuebyId("input--last-contact-person");
+
+          if (time && person) {
+            return `${this.formatDateTime(time)} - ${person}`;
+          } else if (time) {
+            return this.formatDateTime(time);
+          } else if (person) {
+            return person;
+          } else {
+            return "";
+          }
+        }
+
+        getAllRequiredLabels(form) {
+          return form.querySelectorAll("label.required");
+        }
+
+        isValid(form) {
+          const requiredLabels = this.getAllRequiredLabels(form);
+
+          for (const label of requiredLabels) {
+            const inputId = label.getAttribute("for");
+            const input = document.getElementById(inputId);
+            if (input && !input.value.trim()) {
+              const errorMessage =
+                label.dataset.error || "Please Complete All Required Fields";
+              return { valid: false, message: errorMessage };
+            }
+          }
+
+          return { valid: true };
+        }
+
+        getFormData() {
+          return {
+            priority: Number(this.getInputValuebyId("input--priority")),
+            headcode: this.getInputValuebyId("input--headcode"),
+            location: this.getInputValuebyId("input--location"),
+            locationW3W: this.getInputValuebyId("input--location-w3w"),
+            traction: this.getInputValuebyId("input--traction"),
+            strandedAt: this.getInputValuebyId("input--stranded-at"),
+            contact: this.getInputValuebyId("input--contact"),
+            contactNo: this.getInputValuebyId("input--contact-no"),
+            responder: this.getInputValuebyId("input--responder"),
+            responderNo: this.getInputValuebyId("input--responder-no"),
+            ccilRef: this.getInputValuebyId("input--ccil-ref"),
+            status: this.getInputValuebyId("input--status"),
+            moodOnboard: this.getInputValuebyId("input--mood-onboard"),
+            rescuedAt: this.getInputValuebyId("input--rescued-at"),
+            passengerLoading: this.getInputValuebyId(
+              "input--passenger-loading",
+            ),
+            passengerCount: this.getInputValuebyId("input--passenger-count"),
+            toiletsWorking: this.getInputValuebyId("input--toilets-working"),
+            noOfStaff: this.getInputValuebyId("input--number-of-staff"),
+            vulnerablePeople: this.getInputValuebyId(
+              "input--vulnerable-people",
+            ),
+            tolo: this.getInputValuebyId("input--tolo"),
+            heatingRequired: this.getInputValuebyId("input--heating-required"),
+            airCoolingRequired: this.getInputValuebyId(
+              "input--air-cooling-required",
+            ),
+            lighting: this.getInputValuebyId("input--lighting"),
+            strandedTrainChampion: this.getInputValuebyId(
+              "input--stranded-train-champion",
+            ),
+            championNo: this.getInputValuebyId("input--champion-no"),
+            otherAffectedTrains: this.getInputValuebyId(
+              "input--other-affected-trains",
+            ),
+            planA: this.getInputValuebyId("input--plan-a"),
+            planB: this.getInputValuebyId("input--plan-b"),
+            planC: this.getInputValuebyId("input--plan-c"),
+            additionalInformation: this.getInputValuebyId(
+              "input--additional-information",
+            ),
+            lastContact: this.getInputValuebyId("input--last-contact-time"),
+            lastContactPerson: this.getInputValuebyId(
+              "input--last-contact-person",
+            ),
+            contactRecord:
+              `${this.getInputValuebyId("input--contact-record")}${this.lastUpdatedInfoChanged() ? `\n${this.formatLastUpdatedInfo()}` : ""}`.trim(),
+            showDeletionFlag:
+              this.getInputValuebyId("input--status") === "Rescued",
+            lastUpdated: new Date().toISOString(),
+          };
+        }
+
+        setFormData(form, data) {
+          form.querySelector("#input--priority").value = data.priority;
+          form.querySelector("#input--headcode").value = data.headcode;
+          form.querySelector("#input--location").value = data.location;
+          form.querySelector("#input--location-w3w").value = data.locationW3W;
+          form.querySelector("#input--traction").value = data.traction;
+          form.querySelector("#input--stranded-at").value = data.strandedAt;
+          form.querySelector("#input--contact").value = data.contact;
+          form.querySelector("#input--contact-no").value = data.contactNo;
+          form.querySelector("#input--responder").value = data.responder;
+          form.querySelector("#input--responder-no").value = data.responderNo;
+          form.querySelector("#input--ccil-ref").value = data.ccilRef;
+          form.querySelector("#input--status").value = data.status;
+          form.querySelector("#input--mood-onboard").value = data.moodOnboard;
+          form.querySelector("#input--rescued-at").value = data.rescuedAt;
+          form.querySelector("#input--passenger-loading").value =
+            data.passengerLoading;
+          form.querySelector("#input--passenger-count").value =
+            data.passengerCount;
+          form.querySelector("#input--toilets-working").value =
+            data.toiletsWorking;
+          form.querySelector("#input--number-of-staff").value = data.noOfStaff;
+          form.querySelector("#input--vulnerable-people").value =
+            data.vulnerablePeople;
+          form.querySelector("#input--tolo").value = data.tolo;
+          form.querySelector("#input--heating-required").value =
+            data.heatingRequired;
+          form.querySelector("#input--air-cooling-required").value =
+            data.airCoolingRequired;
+          form.querySelector("#input--lighting").value = data.lighting;
+          form.querySelector("#input--stranded-train-champion").value =
+            data.strandedTrainChampion;
+          form.querySelector("#input--champion-no").value = data.championNo;
+          form.querySelector("#input--other-affected-trains").value =
+            data.otherAffectedTrains;
+          form.querySelector("#input--plan-a").value = data.planA;
+          form.querySelector("#input--plan-b").value = data.planB;
+          form.querySelector("#input--plan-c").value = data.planC;
+          form.querySelector("#input--additional-information").value =
+            data.additionalInformation;
+          this.setInputDefaultValue(
+            form.querySelector("#input--last-contact-time"),
+            data.lastContact,
+          );
+          this.setInputDefaultValue(
+            form.querySelector("#input--last-contact-person"),
+            data.lastContactPerson,
+          );
+          form.querySelector("#input--contact-record").value =
+            data.contactRecord;
+          form.querySelector("#input--last-updated").value = new Date(
+            data.lastUpdated,
+          ).toLocaleString();
+          form
+            .querySelector("#form-group--last-updated")
+            .classList.remove("hidden");
+        }
+
+        /**
+         * Format a date/time input into:
+         * "dd MMM yyyy HH:mm" (e.g. "05 Feb 2026 14:32")
+         *
+         * @param {string|Date|null|undefined} input
+         * @returns {string} Formatted date string or empty string if invalid
+         */
+        formatDateTime(input) {
+          if (!input) return "";
+
+          const date = new Date(input);
+          if (isNaN(date)) return "";
+
+          const day = String(date.getDate()).padStart(2, "0");
+          const month = date.toLocaleString("en-GB", { month: "short" });
+          const year = date.getFullYear();
+          const hours = String(date.getHours()).padStart(2, "0");
+          const minutes = String(date.getMinutes()).padStart(2, "0");
+
+          return `${day} ${month} ${year} ${hours}:${minutes}`;
+        }
+
+        getInputValuebyId(id) {
+          return document.getElementById(id).value;
+        }
+
+        setInputDefaultValue(input, value) {
+          input.value = value;
+          input.dataset.defaultValue = value;
+        }
+
+        hasInputChanged(input) {
+          if (input.value != input.dataset.defaultValue) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+
+      const myForm = new Form();
+
+      // GLOBAL VARIABLES
+      const form = document.querySelector(".modal-form");
+      const statusSelect = form.querySelector("#input--status");
+      const strandedAtInput = form.querySelector("#input--stranded-at");
+      const rescuedAtInput = form.querySelector("#input--rescued-at");
+      const strandedTrains = [];
+      const devTimeInput = document.getElementById("date-time--dev");
+
+      // TODO: Counter for last contact updates
+
+      // EVENT LISTENERS
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const form = e.target.closest("form");
+
+        const formMode = myForm.getFormMode(form);
+
+        const data = myForm.getFormData();
+
+        console.log(data);
+
+        const formValid = myForm.isValid(form);
+        if (!formValid.valid) {
+          myAlert.render(formValid.message, "error", 3);
+          return;
+        }
+
+        addStrandedTrain(formMode, data);
+
+        strandedTrains.sort((a, b) => a.priority - b.priority);
+
+        // Update priorities based on current order in array
+        for (let i = 0; i < strandedTrains.length; i++) {
+          const train = strandedTrains[i];
+          train.priority = i + 1;
+        }
+
+        myTable.renderStrandedTrainsTable(strandedTrains);
+        closeModal();
+      });
+
+      document.addEventListener("click", async (e) => {
+        const closeModal = e.target.closest(".modal-close");
+
+        if (closeModal) {
+          document.getElementById("modalBackdrop").classList.add("hidden");
+          form.reset();
+          return;
+        }
+
+        const button = e.target.closest("button");
+        if (button) {
+          if (button.id === "btn-add") {
+            form.dataset.mode = "new";
+            form.dataset.index = "";
+            form
+              .querySelector("#form-group--last-updated")
+              .classList.add("hidden");
+            openModal();
+          } else if (button.classList.contains("btn-delete")) {
+            const index = button.dataset.index;
+
+            const confirmed = await myAlert.showConfirm(
+              "Are you sure you want to delete this entry?",
+              "Yes, delete it",
+              "No, keep it",
+            );
+
+            if (confirmed) {
+              strandedTrains.splice(index, 1);
+              myTable.renderStrandedTrainsTable(strandedTrains);
+            }
+          }
+          return;
+        }
+
+        const row = e.target.closest(".table-row");
+        if (row) {
+          const index = row.id.split("-")[1];
+          const data = strandedTrains[index];
+          myForm.setFormMode(form, "edit");
+          myForm.setIndex(form, index);
+          openModal();
+
+          myForm.setFormData(form, data);
+        }
+      });
+
+      statusSelect.addEventListener("change", (e) => {
+        const value = statusSelect.value;
+        if (value === "Rescued") {
+          setInputToNow(rescuedAtInput);
+          document.getElementById("input--rescued-at").disabled = false;
+        } else {
+          rescuedAtInput.value = "";
+          document.getElementById("input--rescued-at").disabled = true;
+        }
+      });
+
+      devTimeInput.addEventListener("change", () => {
+        myTable.renderStrandedTrainsTable(strandedTrains);
+      });
+
+      // FUNCTIONS
+
+      const closeModal = () => {
+        document.getElementById("modalBackdrop").classList.add("hidden");
+        form.reset();
+        return;
+      };
+
+      const openModal = () => {
+        if (form.dataset.mode === "new") {
+          setInputToNow(strandedAtInput);
+          document
+            .getElementById("form-group--priority")
+            .classList.add("hidden");
+        } else {
+          document
+            .getElementById("form-group--priority")
+            .classList.remove("hidden");
+        }
+
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+        form.scrollTop = 0;
+      };
+
+      const addStrandedTrain = (mode, data) => {
+        if (mode === "new") {
+          data.priority = strandedTrains.length + 1; // New entries get lowest priority
+          strandedTrains.push(data);
+        } else {
+          const index = form.dataset.index;
+          data.priority =
+            data.priority <= index + 1
+              ? data.priority - 0.1
+              : data.priority + 0.1; // Adjust priority to ensure it moves to correct position after sorting
+          strandedTrains[index] = data;
+        }
+      };
+
+      const setInputToNow = (input) => {
+        const now = new Date();
+
+        // Convert to local ISO format without seconds
+        const localNow = new Date(
+          now.getTime() - now.getTimezoneOffset() * 60000,
+        )
+          .toISOString()
+          .slice(0, 16);
+
+        input.value = localNow;
+      };
+
+      const updateDurations = () => {
+        myTable.renderStrandedTrainsTable(strandedTrains);
+      };
+
+      // LOOP TO UPDATE DURATIONS EVERY MINUTE
+      setInterval(updateDurations, 60000);
+    </script>
+  </body>
+</html>

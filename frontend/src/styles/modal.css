@@ -1,0 +1,166 @@
+/* Backdrop */
+.modal-backdrop {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Modal shell */
+.modal {
+  width: min(90vw, 1200px);
+  min-width: 500px;
+  max-height: 90vh;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  font-family: "Segoe UI", Arial, sans-serif;
+  animation: modalIn 0.2s ease;
+  overflow: hidden;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #009879;
+  color: #ffffff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Close */
+.modal-close {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+/* Form body */
+.modal-form {
+  padding: 20px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: scroll;
+}
+
+/* Form groups */
+.form-group-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  min-width: 200px;
+  flex: 4;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #009879;
+  box-shadow: 0 0 0 2px rgba(0, 152, 121, 0.2);
+}
+
+.modal textarea {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-family: inherit;
+  resize: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal textarea:focus {
+  outline: none;
+  border-color: #009879;
+  box-shadow: 0 0 0 2px rgba(0, 152, 121, 0.2);
+}
+
+/* Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* Secondary button variant */
+.modal .btn-secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.modal .btn-secondary:hover {
+  transform: scale(0.95);
+}
+
+/* Chrome, Safari, Edge, Opera */
+.modal .input-hide-number-arrows::-webkit-outer-spin-button,
+.modal .input-hide-number-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.modal .input-hide-number-arrows[type="number"] {
+  -moz-appearance: textfield; /* For Firefox */
+  appearance: textfield; /* Standard property */
+}
+
+/* Animation */
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

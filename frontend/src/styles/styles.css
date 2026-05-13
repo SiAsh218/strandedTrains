@@ -1,0 +1,42 @@
+@import "./header.css";
+@import "./table.css";
+@import "./button.css";
+@import "./modal.css";
+
+/* Apply to every element */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Base page setup */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f4f4;
+}
+
+/* Ensure images don't overflow their containers */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+label.required {
+  position: relative;
+}
+
+label.required::before {
+  content: "*";
+  color: black;
+  font-weight: bold;
+  position: absolute;
+  left: -10px; /* adjust as needed */
+}

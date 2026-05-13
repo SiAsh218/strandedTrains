@@ -1,0 +1,37 @@
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: #009879;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease;
+}
+
+.btn:hover {
+  transform: scale(0.95);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.6);
+  outline-offset: 2px;
+}
+
+.btn-delete {
+  background: none;
+  color: #009879;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  color: #007700;
+}

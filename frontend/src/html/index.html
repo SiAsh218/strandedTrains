@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/styles/styles.css" />
+    <title>Stranded Trains Board</title>
+  </head>
+  <body>
+    <header>
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div style="width: 60px">
+          <!-- TODO: Add hidden class for production -->
+          <input id="date-time--dev" class="hidden" type="datetime-local" />
+        </div>
+        <span>STRANDED TRAINS BOARD</span>
+        <div
+          style="
+            width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 2px;
+          "
+        >
+          <button class="btn" id="btn-add">+</button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div style="padding: 0 5px">
+        <table class="table--stranded-trains">
+          <thead>
+            <tr>
+              <th style="width: 50px">Head Code</th>
+              <th style="width: 150px">Location</th>
+              <th style="width: 120px">Came To A Stand At</th>
+              <th style="width: 100px">Duration</th>
+              <th style="width: 100px">Contact</th>
+              <th style="width: 100px">Status</th>
+              <th style="width: 100px">Passenger Loading</th>
+              <th style="width: 100px">Toilets</th>
+              <th style="width: 100px">Vulnerable People</th>
+              <th style="width: 100px">TOLO</th>
+              <th style="width: 100px">Champion</th>
+              <th>Plan</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{strandedTrains_template}}
+            <tr data-database-id="{{id}}" class="stranded-train-row">
+              <td class="td--headcode">{{headcode}}</td>
+              <td class="td--location">{{location}}</td>
+              <td class="td--stranded-at">{{strandedAt}}</td>
+              <td class="duration"></td>
+              <td class="td--contact">{{contact}}</td>
+              <td class="td--status">{{status}}</td>
+              <td class="td--passenger-loading">{{passengerLoading}}</td>
+              <td class="td--toilets-working">{{toiletsWorking}}</td>
+              <td class="td--vulnerable-people">{{vulnerablePeople}}</td>
+              <td class="td--tolo">{{tolo}}</td>
+              <td class="td--champion">{{strandedTrainChampion}}</td>
+              <td class="td--plan">
+                <b>Plan A</b><br />{{planA}}<br /><b>Plan B</b
+                ><br />{{planB}}<br /><b>Plan C</b><br />{{planC}}
+              </td>
+            </tr>
+            {{/strandedTrains_template}}
+          </tbody>
+        </table>
+      </div>
+      <div></div>
+    </main>
+    <!-- Modal -->
+    <div class="modal-backdrop hidden" id="modalBackdrop">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <header class="modal-header">
+          <h2 id="modalTitle">Add Stranded Train</h2>
+          <button class="modal-close" id="closeModal" aria-label="Close">
+            ×
+          </button>
+        </header>
+
+        <form class="modal-form" data-mode="new" data-database-id="">
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                class="required"
+                for="input--headcode"
+                data-error="Headcode is a required field"
+                >Headcode</label
+              >
+              <input type="text" id="input--headcode" name="headcode" />
+            </div>
+
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Location is a required field"
+                for="input--location"
+                >Location</label
+              >
+              <input
+                type="text"
+                id="input--location"
+                placeholder="Either exact location or between X and Y"
+                name="location"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--location-w3w">Location What3Words</label>
+              <input type="text" id="input--location-w3w" name="location-w3w" />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--traction">Traction</label>
+              <select id="input--traction" name="traction">
+                <option value=""></option>
+                <option value="Diesel Only">Diesel Only</option>
+                <option value="Electric Only">Electric Only</option>
+                <option value="Battery Only">Battery Only</option>
+                <option value="Bi-Mode">Bi-Mode</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Stranded At is a required field"
+                for="input--stranded-at"
+                >Came To A Stand At</label
+              >
+              <input
+                type="datetime-local"
+                id="input--stranded-at"
+                name="stranded-at"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--ccil-ref">CCIL Ref</label>
+              <input
+                class="input-hide-number-arrows"
+                type="text"
+                inputmode="numeric"
+                id="input--ccil-ref"
+                name="ccil-ref"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                data-error="Contact On Train is a required field"
+                class="required"
+                for="input--contact"
+                >Contact On Train</label
+              >
+              <input type="text" id="input--contact" name="contact" />
+            </div>
+
+            <div class="form-group">
+              <label for="input--contact-no">Contact On Train No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--contact-no"
+                name="contact-no"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--responder">Responding Contact</label>
+              <input type="text" id="input--responder" name="responder" />
+            </div>
+
+            <div class="form-group">
+              <label for="input--responder-no">Responding Contact No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--responder-no"
+                name="responder-no"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Status is a required field"
+                for="input--status"
+                >Status</label
+              >
+              <select id="input--status" name="status">
+                <option value=""></option>
+                <option value="Stranded">Stranded</option>
+                <option value="Trapped">Trapped</option>
+                <option value="Evacuation">Evacuation</option>
+                <option value="Rescued">On The Move</option>
+              </select>
+            </div>
+
+            <div
+              class="form-group form-group--rescued-at"
+              id="form-group--rescued-at"
+            >
+              <label for="input--rescued-at">On The Move At</label>
+              <input
+                type="datetime-local"
+                id="input--rescued-at"
+                disabled
+                name="rescued-at"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--tolo">TOLO Assigned</label>
+              <select id="input--tolo" name="tolo">
+                <option value=""></option>
+                <option value="Assigned">Assigned</option>
+                <option value="On Route">On Route</option>
+                <option value="Not Assigned">Not Assigned</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--passenger-loading">Passenger Loading</label>
+              <select id="input--passenger-loading" name="passenger-loading">
+                <option value=""></option>
+                <option value="Low">Low - Plenty Of Seats</option>
+                <option value="Medium">
+                  Medium - All Passenegers Have Seats
+                </option>
+                <option value="High">
+                  High - Some People Stood In Vestibules
+                </option>
+                <option value="Very High">
+                  Very High - People Standing Throughout
+                </option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--passenger-count">Passenger Count</label>
+              <input
+                class="input-hide-number-arrows"
+                type="text"
+                inputmode="numeric"
+                id="input--passenger-count"
+                name="passenger-count"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--vulnerable-people">Vulnerable People</label>
+              <select id="input--vulnerable-people" name="vulnerable-people">
+                <option value=""></option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3+">3+</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--toilets-working">Toilets Working</label>
+              <select id="input--toilets-working" name="toilets-working">
+                <option value=""></option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--number-of-staff"
+                >Number of Staff Onboard</label
+              >
+              <input
+                class="input-hide-number-arrows"
+                type="text"
+                inputmode="numeric"
+                id="input--number-of-staff"
+                name="number-of-staff"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--mood-onboard">Mood Onboard</label>
+              <input type="text" id="input--mood-onboard" name="mood-onboard" />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--heating-required">Heating</label>
+              <select id="input--heating-required" name="heating-required">
+                <option value=""></option>
+                <option value="Fully Operational">Fully Operational</option>
+                <option value="Not Operational">Not Operational</option>
+                <option value="Partially Operational">
+                  Partially Operational
+                </option>
+                <option value="Not Required">Not Required</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--air-cooling-required">Air Cooling</label>
+              <select
+                id="input--air-cooling-required"
+                name="air-cooling-required"
+              >
+                <option value=""></option>
+                <option value="Fully Operational">Fully Operational</option>
+                <option value="Not Operational">Not Operational</option>
+                <option value="Partially Operational">
+                  Partially Operational
+                </option>
+                <option value="Not Required">Not Required</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="input--lighting">Lighting</label>
+              <select id="input--lighting" name="lighting">
+                <option value=""></option>
+                <option value="Fully Operational">Fully Operational</option>
+                <option value="Not Operational">Not Operational</option>
+                <option value="Partially Operational">
+                  Partially Operational
+                </option>
+                <option value="Not Required">Not Required</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--stranded-train-champion"
+                >Stranded Train Champion</label
+              >
+              <input
+                type="text"
+                id="input--stranded-train-champion"
+                name="stranded-train-champion"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--champion-no">Champion No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--champion-no"
+                name="champion-no"
+              />
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--plan-a">Plan A</label>
+              <textarea id="input--plan-a" name="plan-a" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="input--plan-b">Plan B</label>
+              <textarea id="input--plan-b" name="plan-b" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="input--plan-c">Plan C</label>
+              <textarea id="input--plan-c" name="plan-c" rows="4"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="input--other-affected-trains"
+                >Other Affected Trains</label
+              >
+              <textarea
+                id="input--other-affected-trains"
+                name="other-affected-trains"
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="input--additional-information"
+                >Additional Information</label
+              >
+              <textarea
+                id="input--additional-information"
+                name="additional-information"
+                rows="4"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
+                class="required"
+                data-error="Last Contact Time is a required field"
+                for="input--last-contact-time"
+                >Last Contact Time</label
+              >
+              <input
+                type="datetime-local"
+                id="input--last-contact-time"
+                name="last-contact-time"
+              />
+            </div>
+
+            <div class="form-group">
+              <label
+                for="input--last-contact-person"
+                class="required"
+                data-error="Last Contact Person is a required field"
+                >Last Contact Person</label
+              >
+              <input
+                type="text"
+                id="input--last-contact-person"
+                name="last-contact-person"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="input--contact-record">Contact Record</label>
+              <textarea
+                id="input--contact-record"
+                name="contact-record"
+                rows="4"
+                disabled
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div
+              class="form-group hidden form-group--priority"
+              id="form-group--priority"
+            >
+              <label for="input--priority">Priority</label>
+              <input
+                type="number"
+                min="1"
+                id="input--priority"
+                name="priority"
+                min="1"
+              />
+            </div>
+
+            <div
+              class="form-group hidden form-group--last-updated"
+              id="form-group--last-updated"
+            >
+              <label for="input--last-updated">Last Updated</label>
+              <input
+                type="text"
+                id="input--last-updated"
+                name="last-updated"
+                disabled
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <footer></footer>
+    <script type="module" src="./dist/bundle.js"></script>
+  </body>
+</html>
