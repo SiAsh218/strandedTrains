@@ -347,7 +347,7 @@ const hideEditButtons = () => {
   return document.getElementById("btn-add").classList.contains("hidden");
 };
 
-await updateDurations();
+updateDurations();
 
 // LOOP TO UPDATE DURATIONS EVERY MINUTE
-setInterval(await updateDurations(), 60000);
+setInterval(updateDurations(), 60000);
