@@ -46,7 +46,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  addStrandedTrain(formMode, data);
+  await addStrandedTrain(formMode, data);
 
   const strandedTrains = await getStrandedTrains();
 
