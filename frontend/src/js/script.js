@@ -36,7 +36,9 @@ form.addEventListener("submit", async (e) => {
 
   const data = myForm.getFormData();
 
-  // console.log(data);
+  if (process.env.NODE_ENV === "development") {
+    console.log(data);
+  }
 
   const formValid = myForm.isValid(form);
   if (!formValid.valid) {

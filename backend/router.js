@@ -123,8 +123,6 @@ class Router {
       else if (req.url === "/api/stranded-trains" && req.method === "POST") {
         if (!auth.requireAuth(req, res)) return;
 
-        console.log("Authenticated user:", user);
-
         const body = await dataController.parseBody(req);
 
         const result = await dataController.create(body);
