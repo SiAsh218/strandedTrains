@@ -81,7 +81,10 @@ loginForm.addEventListener("submit", async (e) => {
   }
 
   if (result.success) {
-    window.location.reload();
+    myAlert.render("Login successful!", "success", 2);
+    document.getElementById("btn-add").classList.remove("hidden");
+    updateDurations();
+    // window.location.reload();
   }
 
   closeModal();
