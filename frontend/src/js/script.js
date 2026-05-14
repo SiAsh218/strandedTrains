@@ -358,4 +358,4 @@ const hideEditButtons = () => {
 updateDurations();
 
 // LOOP TO UPDATE DURATIONS EVERY MINUTE
-setInterval(updateDurations(), 60000);
+setInterval(updateDurations, 60000);
