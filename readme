@@ -1,0 +1,23 @@
+# Stranded Trains
+
+## Overview
+
+A web app for tracking stranded trains, designed for rail control rooms
+
+## Feature
+
+- Track stranded train status
+- Track stranded train duration
+- Alert over due communication with the stranded train
+
+## Tech Stack
+
+- Node.js backend
+- JS Frontend
+- SQLite Database
+
+## Getting Started
+
+- npm install
+- npm run build
+- npm run start
