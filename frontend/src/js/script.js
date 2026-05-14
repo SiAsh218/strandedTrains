@@ -158,6 +158,10 @@ document.addEventListener("click", async (e) => {
 
     const strandedTrain = await getStrandedTrainById(id);
 
+    if (!strandedTrain) {
+      return;
+    }
+
     // const data = strandedTrains[index];
     myForm.setFormMode(form, "edit");
     myForm.setId(form, id);
@@ -255,7 +259,7 @@ const addStrandedTrain = async (mode, data) => {
       const result = await res.json();
 
       if (!res.ok) {
-        myAlert.render(result.error || "Failed to create entry", "error", 3);
+        myAlert.render(result.error || "Failed to update entry", "error", 3);
 
         return;
       }
