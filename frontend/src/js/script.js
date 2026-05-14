@@ -129,12 +129,12 @@ document.addEventListener("click", async (e) => {
         const result = await res.json();
 
         if (!res.ok) {
-          myAlert.render(result.error || "Failed to create entry", "error", 3);
+          myAlert.render(result.error || "Failed to delete entry", "error", 3);
 
           return;
         }
 
-        updateDurations();
+        await updateDurations();
       }
     }
     return;
@@ -251,7 +251,7 @@ const addStrandedTrain = async (mode, data) => {
     //   data.priority <= index + 1 ? data.priority - 0.1 : data.priority + 0.1; // Adjust priority to ensure it moves to correct position after sorting
     // strandedTrains[index] = data;
   }
-  updateDurations();
+  await updateDurations();
 };
 
 const setInputToNow = (input) => {
@@ -308,7 +308,7 @@ const hideEditButtons = () => {
   return document.getElementById("btn-add").classList.contains("hidden");
 };
 
-updateDurations();
+await updateDurations();
 
 // LOOP TO UPDATE DURATIONS EVERY MINUTE
-setInterval(updateDurations, 60000);
+setInterval(await updateDurations(), 60000);
