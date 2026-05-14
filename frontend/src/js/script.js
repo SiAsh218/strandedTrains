@@ -118,23 +118,32 @@ document.addEventListener("click", async (e) => {
       );
 
       if (confirmed) {
-        const res = await fetch(`/api/stranded-trains/${databaseId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ deleted: true }),
-        });
+        try {
+          const res = await fetch(`/api/stranded-trains/${databaseId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ deleted: true }),
+          });
 
-        const result = await res.json();
+          const result = await res.json();
 
-        if (!res.ok) {
-          myAlert.render(result.error || "Failed to delete entry", "error", 3);
+          if (!res.ok) {
+            myAlert.render(
+              result.error || "Failed to delete entry",
+              "error",
+              3,
+            );
 
-          return;
+            return;
+          }
+
+          await updateDurations();
+        } catch (error) {
+          console.error("Error deleting stranded train:", error);
+          myAlert.render("Failed to delete stranded train", "error", 3);
         }
-
-        await updateDurations();
       }
     }
     return;
@@ -209,49 +218,54 @@ const openModal = () => {
 };
 
 const addStrandedTrain = async (mode, data) => {
-  if (mode === "new") {
-    const strandedTrains = await getStrandedTrains();
-    data.priority = strandedTrains.length + 1; // New entries get lowest priority
+  try {
+    if (mode === "new") {
+      const strandedTrains = await getStrandedTrains();
+      data.priority = strandedTrains.length + 1; // New entries get lowest priority
 
-    const res = await fetch("/api/stranded-trains", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+      const res = await fetch("/api/stranded-trains", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    const result = await res.json();
+      const result = await res.json();
 
-    if (!res.ok) {
-      myAlert.render(result.error || "Failed to create entry", "error", 3);
+      if (!res.ok) {
+        myAlert.render(result.error || "Failed to create entry", "error", 3);
 
-      return;
+        return;
+      }
+    } else {
+      const id = form.dataset.databaseId;
+
+      const res = await fetch(`/api/stranded-trains/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        myAlert.render(result.error || "Failed to create entry", "error", 3);
+
+        return;
+      }
+
+      // data.priority =
+      //   data.priority <= index + 1 ? data.priority - 0.1 : data.priority + 0.1; // Adjust priority to ensure it moves to correct position after sorting
+      // strandedTrains[index] = data;
     }
-  } else {
-    const id = form.dataset.databaseId;
-
-    const res = await fetch(`/api/stranded-trains/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result = await res.json();
-
-    if (!res.ok) {
-      myAlert.render(result.error || "Failed to create entry", "error", 3);
-
-      return;
-    }
-
-    // data.priority =
-    //   data.priority <= index + 1 ? data.priority - 0.1 : data.priority + 0.1; // Adjust priority to ensure it moves to correct position after sorting
-    // strandedTrains[index] = data;
+    await updateDurations();
+  } catch (error) {
+    console.error("Error adding/updating stranded train:", error);
+    myAlert.render("Failed to save stranded train data", "error", 3);
   }
-  await updateDurations();
 };
 
 const setInputToNow = (input) => {
@@ -266,41 +280,63 @@ const setInputToNow = (input) => {
 };
 
 const login = async (username, password) => {
-  const response = await fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username,
-      password,
-    }),
-    credentials: "include",
-  });
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+      credentials: "include",
+    });
 
-  return await response.json();
+    return await response.json();
+  } catch (error) {
+    console.error("Error during login:", error);
+    return { success: false, error: "Login failed due to network error" };
+  }
 };
 
 const getStrandedTrains = async () => {
-  const response = await fetch(`/api/stranded-trains`, {
-    method: "GET",
-  });
+  try {
+    const response = await fetch(`/api/stranded-trains`, {
+      method: "GET",
+    });
 
-  return await response.json();
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching stranded trains:", error);
+    myAlert.render("Failed to fetch stranded trains", "error", 3);
+    return [];
+  }
 };
 
 const getStrandedTrainById = async (id) => {
-  const response = await fetch(`/api/stranded-trains/${id}`, {
-    method: "GET",
-  });
+  try {
+    const response = await fetch(`/api/stranded-trains/${id}`, {
+      method: "GET",
+    });
 
-  return await response.json();
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching stranded train by ID:", error);
+    myAlert.render("Failed to fetch stranded train details", "error", 3);
+    return null;
+  }
 };
 
 const updateDurations = async () => {
-  const strandedTrains = await getStrandedTrains();
+  try {
+    const strandedTrains = await getStrandedTrains();
 
-  myTable.renderStrandedTrainsTable(strandedTrains);
+    myTable.renderStrandedTrainsTable(strandedTrains);
+  } catch (error) {
+    console.error("Error updating durations:", error);
+    myAlert.render("Failed to update durations", "error", 3);
+  }
 };
 
 // Utility method to hide edit buttons for users who are not logged in
