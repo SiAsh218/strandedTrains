@@ -309,6 +309,8 @@ const getStrandedTrains = async () => {
       method: "GET",
     });
 
+    if (!response.ok) throw new Error("Failed to fetch stranded trains");
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching stranded trains:", error);
@@ -322,6 +324,8 @@ const getStrandedTrainById = async (id) => {
     const response = await fetch(`/api/stranded-trains/${id}`, {
       method: "GET",
     });
+
+    if (!response.ok) throw new Error("Failed to fetch stranded train by ID");
 
     return await response.json();
   } catch (error) {
