@@ -36,7 +36,7 @@ form.addEventListener("submit", async (e) => {
 
   const data = myForm.getFormData();
 
-  console.log(data);
+  // console.log(data);
 
   const formValid = myForm.isValid(form);
   if (!formValid.valid) {
@@ -83,8 +83,6 @@ loginForm.addEventListener("submit", async (e) => {
   }
 
   closeModal();
-
-  console.log(username, password);
 });
 
 // =========================
