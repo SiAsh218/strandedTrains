@@ -7,25 +7,25 @@ const USERS = [
     username: "admin",
     role: "admin",
     passwordHash:
-      "$2b$10$JQMnKr/OIRiLssu4AeyeyennW4mUuFJ1ruLvqyLAkeKmCFcTNmvGG", // password = railway123
+      "$2b$10$JQMnKr/OIRiLssu4AeyeyennW4mUuFJ1ruLvqyLAkeKmCFcTNmvGG",
   },
   {
     username: "gwruser1",
     role: "gwr",
     passwordHash:
-      "$2b$10$HCtcw4c9Vkbrry7KJC56MO4fwTAjFIlg2kfscyCRMq/ke6O.fvwUG", // password = gwruser800
+      "$2b$10$HCtcw4c9Vkbrry7KJC56MO4fwTAjFIlg2kfscyCRMq/ke6O.fvwUG",
   },
   {
     username: "xcuser2",
     role: "xc",
     passwordHash:
-      "$2b$10$siVE54NarC2ChTFDs9hOXu1tCtb6.W.0kvMPv.BcrXYoBgovfi/du", // password = xcuser220
+      "$2b$10$siVE54NarC2ChTFDs9hOXu1tCtb6.W.0kvMPv.BcrXYoBgovfi/du",
   },
   {
     username: "gtsuser3",
     role: "gts",
     passwordHash:
-      "$2b$10$..yFPKcTfJdAvSx6MOkK0OH3e3nMzhjWRPDh8EvJJFUqJSpRfEImO", // password = gtsuser345
+      "$2b$10$..yFPKcTfJdAvSx6MOkK0OH3e3nMzhjWRPDh8EvJJFUqJSpRfEImO",
   },
 ];
 
