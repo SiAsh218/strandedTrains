@@ -48,17 +48,18 @@ form.addEventListener("submit", async (e) => {
 
   await addStrandedTrain(formMode, data);
 
-  const strandedTrains = await getStrandedTrains();
+  // const strandedTrains = await getStrandedTrains();
 
-  strandedTrains.sort((a, b) => a.priority - b.priority);
+  // strandedTrains.sort((a, b) => a.priority - b.priority);
 
-  // Update priorities based on current order in array
-  for (let i = 0; i < strandedTrains.length; i++) {
-    const train = strandedTrains[i];
-    train.priority = i + 1;
-  }
+  // // Update priorities based on current order in array
+  // for (let i = 0; i < strandedTrains.length; i++) {
+  //   const train = strandedTrains[i];
+  //   train.priority = i + 1;
+  // }
 
-  myTable.renderStrandedTrainsTable(strandedTrains);
+  // myTable.renderStrandedTrainsTable(strandedTrains);
+  updateDurations();
   closeModal();
 });
 
@@ -189,9 +190,10 @@ statusSelect.addEventListener("change", (e) => {
 // Change listener for dev time input - updates durations in table based on selected time
 // =========================
 devTimeInput.addEventListener("change", async () => {
-  const strandedTrains = await getStrandedTrains();
+  // const strandedTrains = await getStrandedTrains();
 
-  myTable.renderStrandedTrainsTable(strandedTrains);
+  // myTable.renderStrandedTrainsTable(strandedTrains);
+  updateDurations();
 });
 
 // =========================
@@ -207,12 +209,12 @@ const closeModal = () => {
 };
 
 const openModal = () => {
-  if (form.dataset.mode === "new") {
-    setInputToNow(strandedAtInput);
-    document.getElementById("form-group--priority").classList.add("hidden");
-  } else {
-    document.getElementById("form-group--priority").classList.remove("hidden");
-  }
+  // if (form.dataset.mode === "new") {
+  //   setInputToNow(strandedAtInput);
+  //   document.getElementById("form-group--priority").classList.add("hidden");
+  // } else {
+  //   document.getElementById("form-group--priority").classList.remove("hidden");
+  // }
 
   if (hideEditButtons()) {
     document.querySelector(".modal-footer").classList.add("hidden");
@@ -343,7 +345,16 @@ const updateDurations = async () => {
   try {
     const strandedTrains = await getStrandedTrains();
 
-    myTable.renderStrandedTrainsTable(strandedTrains);
+    if (strandedTrains.length === 0) {
+      document.querySelector(".popup").classList.remove("hidden");
+      document.querySelector(".table--stranded-trains").classList.add("hidden");
+    } else {
+      document.querySelector(".popup").classList.add("hidden");
+      document
+        .querySelector(".table--stranded-trains")
+        .classList.remove("hidden");
+      myTable.renderStrandedTrainsTable(strandedTrains);
+    }
   } catch (error) {
     console.error("Error updating durations:", error);
     myAlert.render("Failed to update durations", "error", 3);

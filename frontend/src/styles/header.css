@@ -1,7 +1,10 @@
 header {
   display: flex;
   justify-content: center;
-  font-size: 2rem;
-  font-weight: bold;
-  padding: 0.2rem;
+  color: var(--gwr-green);
+  font-size: 2.2rem;
+  font-weight: bolder;
+  padding: 0.1rem;
+  background-color: silver;
+  border-bottom: 1px solid var(--gwr-green);
 }

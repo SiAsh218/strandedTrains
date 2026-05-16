@@ -16,49 +16,56 @@
           justify-content: space-between;
         "
       >
-        <button style="width: 75px; height: 40px" class="btn" id="btn-login">
-          👤
+        <button style="width: 80px; height: 40px" class="btn" id="btn-login">
+          Login
         </button>
 
         <input id="date-time--dev" class="hidden" type="datetime-local" />
 
         <span>STRANDED TRAINS BOARD</span>
+
         <div
           style="
-            width: 75px;
+            width: 80px;
+            height: 40px;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-end;
-            padding: 0px;
           "
         >
           <button
-            style="width: 75px; height: 40px"
+            style="width: 80px; height: 40px"
             class="btn {{if_isLoggedIn}} {{else}}hidden{{/if_isLoggedIn}}"
             id="btn-add"
           >
-            +
+            + New
           </button>
         </div>
       </div>
     </header>
     <main>
-      <div style="padding: 0 5px">
-        <table class="table--stranded-trains">
+      <div style="padding: 10px 10px">
+        <div id="popup" class="popup">
+          <div class="popup-box">
+            There are currently no stranded trains recorded on the network
+          </div>
+        </div>
+        <table class="table--stranded-trains hidden">
           <thead>
             <tr>
-              <th style="width: 50px">Head Code</th>
-              <th style="width: 150px">Location</th>
-              <th style="width: 120px">Came To A Stand At</th>
-              <th style="width: 100px">Duration</th>
-              <th style="width: 100px">Contact</th>
-              <th style="width: 100px">Status</th>
-              <th style="width: 100px">Passenger Loading</th>
-              <th style="width: 100px">Toilets</th>
-              <th style="width: 100px">Vulnerable People</th>
+              <th style="width: 50px">HEAD CODE</th>
+              <th style="width: 150px">LOCATION</th>
+              <th style="width: 120px">CAME TO A STAND AT</th>
+              <th style="width: 100px">DURATION</th>
+              <th style="width: 100px">CONTACT</th>
+              <th style="width: 100px">STATUS</th>
+              <th style="width: 100px">PASSENGER LOADING</th>
+              <th style="width: 100px">TOILETS</th>
+              <th style="width: 100px">VULNERABLE PEOPLE</th>
               <th style="width: 100px">TOLO</th>
-              <th style="width: 100px">Champion</th>
-              <th>Plan</th>
+              <th style="width: 100px">CHAMPION</th>
+              <th>PLAN</th>
               <th></th>
             </tr>
           </thead>

@@ -10,7 +10,7 @@ table {
 
 /* Header Styling */
 thead tr {
-  background-color: #009879; /* Sleek dark navy */
+  background-color: var(--gwr-green);
   color: #ffffff;
   text-align: left;
 }
@@ -27,12 +27,12 @@ td {
 /* --- Zebra Striping --- */
 /* Styles every even row */
 tbody tr:nth-child(even) {
-  background-color: #f8fafc;
+  background-color: #eee;
 }
 
 /* Styles every odd row */
 tbody tr:nth-child(odd) {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 /* Hover Effect for Interactivity */
@@ -41,7 +41,10 @@ tbody tr:hover {
   transition: background-color 0.2s ease;
 }
 
-/* Modern Status Badge Style */
+table tr:last-child td {
+  border-bottom: 2px solid var(--gwr-green);
+}
+
 .td--red-bold {
   font-weight: bold;
   color: #dc2626;
@@ -50,6 +53,11 @@ tbody tr:hover {
 .td--yellow-bold {
   font-weight: bold;
   color: #ca8a04;
+}
+
+.td--green-bold {
+  font-weight: bold;
+  color: #16a34a;
 }
 
 @keyframes flash-red {

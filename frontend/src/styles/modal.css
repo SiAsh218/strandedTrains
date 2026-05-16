@@ -34,7 +34,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background: #009879;
+  background: var(--gwr-green);
   color: #ffffff;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;

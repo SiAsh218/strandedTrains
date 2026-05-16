@@ -147,7 +147,9 @@ class Table {
           <td class="${
             row.status === "Stranded" || row.status === "Trapped"
               ? "td--red-bold"
-              : ""
+              : row.status === "Rescued"
+                ? "td--green-bold"
+                : ""
           }">${row.status}</td>
 
           <td class="${loadingRag}">${row.passengerLoading}</td>
