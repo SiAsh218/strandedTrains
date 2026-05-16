@@ -119,11 +119,13 @@ class Router {
         res.end(JSON.stringify(data));
       }
 
-      // CREATE TODO:
+      // CREATE
       else if (req.url === "/api/stranded-trains" && req.method === "POST") {
         if (!auth.requireAuth(req, res)) return;
 
         const body = await dataController.parseBody(req);
+        body.updatedByRole = req.user.role;
+        body.createdByRole = req.user.role;
 
         const result = await dataController.create(body);
 
@@ -139,16 +141,32 @@ class Router {
         );
       }
 
-      // UPDATE TODO:
+      // UPDATE
       else if (
         req.url.startsWith("/api/stranded-trains/") &&
         req.method === "PUT"
       ) {
         console.log("Cookie header:", req.headers.cookie);
         if (!auth.requireAuth(req, res)) return;
+
         const id = req.url.split("/").pop();
 
+        const existing = await dataController.getById(id);
+
+        console.log("Existing record:", existing);
+
+        if (!auth.canEdit(req.user, existing.createdByRole)) {
+          res.writeHead(403, { "Content-Type": "application/json" });
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "You don't have permission to edit this operators records",
+            }),
+          );
+        }
+
         const body = await dataController.parseBody(req);
+        body.updatedByRole = req.user.role;
 
         const result = await dataController.update(id, body);
 
@@ -164,7 +182,7 @@ class Router {
         );
       }
 
-      // DELETE TODO:
+      // DELETE
       // else if (
       //   req.url.startsWith("/api/stranded-trains/") &&
       //   req.method === "DELETE"
