@@ -160,7 +160,7 @@ class Router {
           return res.end(
             JSON.stringify({
               success: false,
-              error: "You don't have permission to edit this operators records",
+              error: `You don't have permission to edit this record it was created by '${existing.createdByRole}' and you are '${req.user.role}'`,
             }),
           );
         }
