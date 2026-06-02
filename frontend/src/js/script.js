@@ -366,7 +366,22 @@ const hideEditButtons = () => {
   return document.getElementById("btn-add").classList.contains("hidden");
 };
 
+const startSynchronizedUpdates = () => {
+  const now = new Date();
+
+  // Milliseconds until next minute
+  const delay = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+  setTimeout(() => {
+    updateDurations(); // Run exactly on the minute
+
+    setInterval(() => {
+      updateDurations();
+    }, 60000);
+  }, delay);
+};
+
 updateDurations();
 
 // LOOP TO UPDATE DURATIONS EVERY MINUTE
-setInterval(updateDurations, 60000);
+startSynchronizedUpdates();
