@@ -20,6 +20,7 @@ const statusSelect = form.querySelector("#input--status");
 const strandedAtInput = form.querySelector("#input--stranded-at");
 const rescuedAtInput = form.querySelector("#input--rescued-at");
 const devTimeInput = document.getElementById("date-time--dev");
+const buttonCopyToClipboard = document.getElementById("btn-copy-to-clipboard");
 
 // =========================
 // Event Listeners
@@ -112,6 +113,8 @@ document.addEventListener("click", async (e) => {
       openModal();
     } else if (button.id === "btn-login") {
       document.getElementById("modalLoginBackdrop").classList.remove("hidden");
+    } else if (button.id === "btn-copy-to-clipboard") {
+      copyToClipboard();
     } else if (button.classList.contains("btn-delete")) {
       const databaseId = button.dataset.index;
 
@@ -364,6 +367,90 @@ const updateDurations = async () => {
 // Utility method to hide edit buttons for users who are not logged in
 const hideEditButtons = () => {
   return document.getElementById("btn-add").classList.contains("hidden");
+};
+
+const getDataForCopyToTyrell = (data) => {
+  console.log("Generating data for copy to Tyrell with input:", data);
+  return `<b>${data.headcode}</b> is <b>${data.status}</b> at <b>${data.location}</b> ${data.locationW3W ? `(W3W - ${data.locationW3W})` : ""}<br><br>
+  
+  <b>Train Info:</b><br>
+  ${data.strandedAt ? `Stranded At - ${new Date(data.strandedAt).toLocaleString()}<br>` : ""}
+  ${data.traction ? `Traction - ${data.traction}<br>` : ""}}
+
+  <b>Passenger Info:</b><br>
+  ${data.passengerCount ? `${data.passengerCount} Passengers<br>` : ""}
+  ${data.passengerLoading ? `${data.passengerLoading} - Passenger Loading<br>` : ""}
+  ${data.vulnerablePeople ? `${data.vulnerablePeople} Vulnerable People<br>` : ""}
+  ${data.noOfStaff ? `${data.noOfStaff} Staff Identified Onboard<br>` : ""}
+  ${data.moodOnboard ? `Mood Onboard - ${data.moodOnboard}<br>` : ""}
+  <br>
+  
+  <b>Facilities:</b><br>
+  ${data.toiletsWorking ? `Toilets - ${data.toiletsWorking}<br>` : ""}
+  ${data.heatingRequired ? `Heating - ${data.heatingRequired}<br>` : ""}
+  ${data.airCoolingRequired ? `Air Cooling - ${data.airCoolingRequired}<br>` : ""}
+  ${data.lighting ? `Lighting - ${data.lighting}<br>` : ""}
+  ${data.paWorking ? `PA System - ${data.paWorking}<br>` : ""}
+  ${data.cateringAvailable ? `Catering - ${data.cateringAvailable}<br>` : ""}
+  <br>
+
+  ${data.tolo ? `<b>TOLO:</b> ${data.tolo}<br><br>` : ""}
+
+  ${data.additionalInformation ? `<b>Additional Information:</b><br>${data.additionalInformation}<br><br>` : ""}
+  `;
+};
+
+const fallbackCopyRichText = (html) => {
+  const div = document.createElement("div");
+
+  div.innerHTML = html;
+  div.contentEditable = true;
+
+  div.style.position = "fixed";
+  div.style.left = "-9999px";
+
+  document.body.appendChild(div);
+
+  const range = document.createRange();
+  range.selectNodeContents(div);
+
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  const success = document.execCommand("copy");
+
+  selection.removeAllRanges();
+  document.body.removeChild(div);
+
+  return success;
+};
+
+const copyToClipboard = async () => {
+  const html = getDataForCopyToTyrell(myForm.getFormData());
+
+  try {
+    if (
+      navigator.clipboard &&
+      navigator.clipboard.write &&
+      window.ClipboardItem
+    ) {
+      const blob = new Blob([html], { type: "text/html" });
+
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "text/html": blob,
+        }),
+      ]);
+    } else {
+      fallbackCopyRichText(html);
+    }
+
+    myAlert.render("Data copied to clipboard", "success", 2);
+  } catch (err) {
+    console.error(err);
+    myAlert.render("Failed to copy to clipboard", "error", 2);
+  }
 };
 
 const startSynchronizedUpdates = () => {

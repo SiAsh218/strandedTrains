@@ -38,6 +38,9 @@ CREATE TABLE IF NOT EXISTS stranded_trains (
   airCoolingRequired TEXT,
   lighting TEXT,
 
+  paWorking TEXT,
+  cateringAvailable TEXT,
+
   strandedTrainChampion TEXT,
   championNo TEXT,
 

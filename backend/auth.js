@@ -77,6 +77,20 @@ const authenticate = async (username, password) => {
   return sessionId;
 };
 
+const addUserRoleToReq = (req) => {
+  const cookies = parseCookies(req);
+
+  const sessionId = cookies.sessionId;
+
+  if (sessionId && sessions.has(sessionId)) {
+    req.user = sessions.get(sessionId);
+    return;
+  } else {
+    req.user = null;
+    return;
+  }
+};
+
 const requireAuth = (req, res) => {
   const cookies = parseCookies(req);
 
@@ -142,4 +156,5 @@ module.exports = {
   logout,
   isLoggedIn,
   canEdit,
+  addUserRoleToReq,
 };

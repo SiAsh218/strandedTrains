@@ -67,7 +67,7 @@ class Table {
       // If rescued → calculate diff between stranded and rescued
       // If not rescued → calculate diff between stranded and now
       const duration =
-        row.status === "Rescued"
+        row.status === "Resolved"
           ? this.timeDiff(strandedFormatted, rescuedFormatted)
           : !this.isDevMode()
             ? this.timeDiff(strandedFormatted)
@@ -88,7 +88,7 @@ class Table {
       const lastContactMinutes = this.durationToMinutes(lastContactDuration);
 
       const lastContactRag =
-        row.status === "Rescued"
+        row.status === "Resolved"
           ? ""
           : lastContactMinutes >= 30
             ? "flashing-red"
@@ -147,7 +147,7 @@ class Table {
           <td class="${
             row.status === "Stranded" || row.status === "Trapped"
               ? "td--red-bold"
-              : row.status === "Rescued"
+              : row.status === "Resolved"
                 ? "td--green-bold"
                 : ""
           }">${row.status}</td>
@@ -159,6 +159,9 @@ class Table {
           }">${row.toiletsWorking}</td>
 
           <td class="${vulnerableRag}">${row.vulnerablePeople}</td>
+
+          <td class="${row.cateringAvailable === "No" ? "td--red-bold" : ""}">${row.cateringAvailable}</td>
+          <td class="${row.paWorking === "No" ? "td--red-bold" : ""}">${row.paWorking}</td>
 
           <td>${row.tolo}</td>
           <td>${row.strandedTrainChampion}</td>

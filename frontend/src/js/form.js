@@ -86,6 +86,8 @@ class Form {
       strandedTrainChampion: this.getInputValuebyId(
         "input--stranded-train-champion",
       ),
+      paWorking: this.getInputValuebyId("input--pa-working"),
+      cateringAvailable: this.getInputValuebyId("input--catering-available"),
       championNo: this.getInputValuebyId("input--champion-no"),
       otherAffectedTrains: this.getInputValuebyId(
         "input--other-affected-trains",
@@ -132,6 +134,9 @@ class Form {
     form.querySelector("#input--air-cooling-required").value =
       data.airCoolingRequired;
     form.querySelector("#input--lighting").value = data.lighting;
+    form.querySelector("#input--pa-working").value = data.paWorking;
+    form.querySelector("#input--catering-available").value =
+      data.cateringAvailable;
     form.querySelector("#input--stranded-train-champion").value =
       data.strandedTrainChampion;
     form.querySelector("#input--champion-no").value = data.championNo;

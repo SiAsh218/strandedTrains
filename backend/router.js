@@ -112,6 +112,14 @@ class Router {
         const id = req.url.split("/").pop();
 
         const data = await dataController.getById(id);
+
+        auth.addUserRoleToReq(req);
+
+        // Only show contact info if the user has permission to edit (i.e. they are the same role as the creator or an admin)
+        if (!auth.canEdit(req.user, data.createdByRole)) {
+          data.contactNo = "";
+        }
+
         res.writeHead(200, {
           "Content-Type": "application/json",
         });
