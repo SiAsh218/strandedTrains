@@ -375,7 +375,7 @@ const getDataForCopyToTyrell = (data) => {
   
   <b>Train Info:</b><br>
   ${data.strandedAt ? `Stranded At - ${new Date(data.strandedAt).toLocaleString()}<br>` : ""}
-  ${data.traction ? `Traction - ${data.traction}<br>` : ""}}
+  ${data.traction ? `Traction - ${data.traction}<br>` : ""}
 
   <b>Passenger Info:</b><br>
   ${data.passengerCount ? `${data.passengerCount} Passengers<br>` : ""}
