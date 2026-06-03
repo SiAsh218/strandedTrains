@@ -397,7 +397,14 @@ const getDataForCopyToTyrell = (data) => {
 
   ${data.tolo ? `<b>TOLO:</b> ${data.tolo}<br><br>` : ""}
 
-  ${data.additionalInformation ? `<b>Additional Information:</b><br>${data.additionalInformation}<br><br>` : ""}
+  ${
+    data.additionalInformation
+      ? `<b>Additional Information:</b><br>${data.additionalInformation.replace(
+          /\r?\n/g,
+          "<br>",
+        )}<br><br>`
+      : ""
+  }
   `;
 };
 
