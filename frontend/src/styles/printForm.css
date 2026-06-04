@@ -2,7 +2,7 @@
   width: 100%;
   /* max-width: 186px; */
   margin: 0 auto;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .print-form h1 {
@@ -42,6 +42,7 @@
   border-bottom: 1px solid #000;
   min-height: 5mm;
   padding-bottom: 1mm;
+  white-space: pre-wrap;
 }
 
 .print-form .inline-group {

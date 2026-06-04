@@ -23,7 +23,7 @@ class PrintHandler {
           <div class="row inline-group">
             <div class="label">Headcode</div>
             <div class="value">${data.headcode}</div>
-            <div class="label">Came To A Stand At</div>
+            <div class="label">Stood At</div>
             <div class="value">${new Date(data.strandedAt).toLocaleString()}</div>
           </div>
           <div class="row inline-group">
@@ -35,7 +35,7 @@ class PrintHandler {
           <div class="row inline-group">
             <div class="label">Location</div>
             <div class="value">${data.location}</div>
-            <div class="label">Location (W3W)</div>
+            <div class="label">W3W</div>
             <div class="value">${data.locationW3W}</div>
           </div>
         </div>
