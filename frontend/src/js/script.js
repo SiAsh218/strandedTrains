@@ -10,6 +10,7 @@
 import myAlert from "./alert";
 import myTable from "./table";
 import myForm from "./form";
+import printHandler from "./printHandler";
 
 // =========================
 // DOM ELEMENTS
@@ -115,6 +116,16 @@ document.addEventListener("click", async (e) => {
       document.getElementById("modalLoginBackdrop").classList.remove("hidden");
     } else if (button.id === "btn-copy-to-clipboard") {
       copyToClipboard();
+    } else if (button.id === "btn-print-stranded-train") {
+      // TODO: print code
+
+      printHandler.deactivatePrintDivs();
+      const div = document.getElementById("div-print--strandedTrains");
+      printHandler.activatePrintDiv(div);
+
+      const data = myForm.getFormData();
+
+      printHandler.printStrandedTrain(data);
     } else if (button.classList.contains("btn-delete")) {
       const databaseId = button.dataset.index;
 

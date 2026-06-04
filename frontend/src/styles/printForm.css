@@ -1,0 +1,54 @@
+.print-form {
+  width: 100%;
+  /* max-width: 186px; */
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+.print-form h1 {
+  font-size: 24px;
+  margin-bottom: 6mm;
+  border-bottom: 1px solid #000;
+  padding-bottom: 2mm;
+}
+
+.print-form h2 {
+  font-size: 18px;
+  margin-top: 8mm;
+  margin-bottom: 4mm;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 1mm;
+}
+
+.print-form .section {
+  margin-bottom: 6mm;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.print-form .row {
+  display: flex;
+  margin-bottom: 4mm;
+}
+
+.print-form .label {
+  font-weight: bold;
+  width: 35%;
+  padding-right: 4mm;
+}
+
+.print-form .value {
+  width: 65%;
+  border-bottom: 1px solid #000;
+  min-height: 5mm;
+  padding-bottom: 1mm;
+}
+
+.print-form .inline-group {
+  display: flex;
+  gap: 6mm;
+}
+
+.print-form .inline-group .field {
+  flex: 1;
+}

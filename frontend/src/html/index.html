@@ -50,6 +50,7 @@
       </div>
     </header>
     <main>
+      <div id="div-print--strandedTrains" class="div-print print-only"></div>
       <div style="padding: 10px 10px">
         <div id="popup" class="popup">
           <div class="popup-box">
@@ -177,7 +178,7 @@
         <header class="modal-header">
           <h2 id="modalLoginTitle">Login</h2>
           <button class="modal-close" id="closeModalLogin" aria-label="Close">
-            ×
+            ✕
           </button>
         </header>
 
@@ -205,7 +206,46 @@
       >
         <header class="modal-header">
           <h2 id="modalTitle">Add Stranded Train</h2>
-          <div>
+          <div style="display: flex; align-items: center">
+            <button
+              style="border: none; background-color: #183029; cursor: pointer"
+              id="btn-print-stranded-train"
+              class="button"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                id="Print-Text--Streamline-Ultimate"
+                height="24"
+                width="24"
+              >
+                <desc>
+                  Print Text Streamline Icon: https://streamlinehq.com
+                </desc>
+                <g id="Print-Text--Streamline-Ultimate.svg">
+                  <path
+                    d="M5.75 6a1 1 0 0 0 1 -1V2h8.84l2.16 2.16V5a1 1 0 0 0 2 0V3.75a1 1 0 0 0 -0.29 -0.75L17 0.59A2 2 0 0 0 15.59 0H6.75a2 2 0 0 0 -2 2v3a1 1 0 0 0 1 1Z"
+                    fill="#ffffff"
+                    stroke-width="1"
+                  ></path>
+                  <path
+                    d="M21.5 7h-19A2.5 2.5 0 0 0 0 9.5V14a2.5 2.5 0 0 0 2.5 2.5H5v6.25A1.25 1.25 0 0 0 6.25 24h12a1.25 1.25 0 0 0 1.25 -1.25V16.5h2A2.5 2.5 0 0 0 24 14V9.5A2.5 2.5 0 0 0 21.5 7Zm-18 4.5a1 1 0 1 1 1 -1 1 1 0 0 1 -1 1Zm14 10a0.5 0.5 0 0 1 -0.5 0.5H7.5a0.5 0.5 0 0 1 -0.5 -0.5v-9a0.5 0.5 0 0 1 0.5 -0.5H17a0.5 0.5 0 0 1 0.5 0.5Z"
+                    fill="#ffffff"
+                    stroke-width="1"
+                  ></path>
+                  <path
+                    d="M15 14.75H9.5a0.75 0.75 0 0 0 0 1.5H15a0.75 0.75 0 0 0 0 -1.5Z"
+                    fill="#ffffff"
+                    stroke-width="1"
+                  ></path>
+                  <path
+                    d="M13.25 18.25H9.5a0.75 0.75 0 0 0 0 1.5h3.75a0.75 0.75 0 0 0 0 -1.5Z"
+                    fill="#ffffff"
+                    stroke-width="1"
+                  ></path>
+                </g>
+              </svg>
+            </button>
             <button
               style="border: none; background-color: #183029; cursor: pointer"
               id="btn-copy-to-clipboard"
@@ -245,7 +285,7 @@
               </svg>
             </button>
             <button class="modal-close" id="closeModal" aria-label="Close">
-              ×
+              ✕
             </button>
           </div>
         </header>

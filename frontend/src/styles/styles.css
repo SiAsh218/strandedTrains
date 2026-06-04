@@ -4,6 +4,8 @@
 @import "./table.css";
 @import "./button.css";
 @import "./modal.css";
+@import "./print.css";
+@import "./printForm.css";
 
 /* Apply to every element */
 *,

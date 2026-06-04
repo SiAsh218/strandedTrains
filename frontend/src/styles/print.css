@@ -1,0 +1,68 @@
+.print-only {
+  position: absolute;
+  left: -9999px;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+    background: white;
+  }
+
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-only {
+    position: static;
+    left: auto;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .div-print--active,
+  .div-print--active * {
+    visibility: visible;
+  }
+
+  .div-print--active {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+  }
+
+  .section,
+  .no-page-break,
+  h1,
+  h2,
+  h3,
+  p,
+  img,
+  table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+}
