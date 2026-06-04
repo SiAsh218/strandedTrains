@@ -87,16 +87,16 @@ class PrintHandler {
         <div class="section" >
           <h2>Plan</h2>
           <div class="row inline-group">
-            <div class="label" style="width: 10%">Plan A</div>
-            <div class="value" style="width: 90%">${data.planA}</div>
+            <div class="label" style="width: 17.5%">Plan A</div>
+            <div class="value" style="width: 82.5%">${data.planA}</div>
           </div>
           <div class="row inline-group">
-            <div class="label" style="width: 10%">Plan B</div>
-            <div class="value" style="width: 90%">${data.planB}</div>
+            <div class="label" style="width: 17.5%">Plan B</div>
+            <div class="value" style="width: 82.5%">${data.planB}</div>
           </div>
           <div class="row inline-group">
-            <div class="label" style="width: 10%">Plan C</div>
-            <div class="value" style="width: 90%">${data.planC}</div>
+            <div class="label" style="width: 17.5%">Plan C</div>
+            <div class="value" style="width: 82.5%">${data.planC}</div>
           </div>
         </div>
         <div class="section" >
