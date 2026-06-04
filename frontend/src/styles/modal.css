@@ -109,6 +109,19 @@
   box-shadow: 0 0 0 2px rgba(0, 152, 121, 0.2);
 }
 
+.form-group input[readonly]:focus,
+.form-group textarea[readonly]:focus {
+  border-color: #cbd5e1;
+  outline: none;
+  box-shadow: none;
+  cursor: default;
+}
+
+.form-group input[readonly],
+.form-group textarea[readonly] {
+  cursor: default;
+}
+
 .modal textarea {
   padding: 10px 12px;
   font-size: 14px;
