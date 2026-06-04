@@ -23,7 +23,7 @@ class PrintHandler {
           <div class="row inline-group">
             <div class="label">Headcode</div>
             <div class="value">${data.headcode}</div>
-            <div class="label">Came To A Stand At</div>
+            <div class="label">Came To A Stand</div>
             <div class="value">${new Date(data.strandedAt).toLocaleString()}</div>
           </div>
           <div class="row inline-group">
@@ -48,10 +48,10 @@ class PrintHandler {
         <div class="section" >
           <h2>Passenger Considerations</h2>
           <div class="row inline-group">
-            <div class="label">Passenger Loading</div>
-            <div class="value">${data.passengerLoading}</div>
             <div class="label">Passenger Count</div>
             <div class="value">${data.passengerCount}</div>
+            <div class="label">Loading</div>
+            <div class="value">${data.passengerLoading}</div>
           </div>
           <div class="row inline-group">
             <div class="label">Vulnerable People</div>
