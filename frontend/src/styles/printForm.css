@@ -39,7 +39,7 @@
 
 .print-form .value {
   width: 65%;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #bbb;
   min-height: 5mm;
   padding-bottom: 1mm;
   white-space: pre-wrap;
