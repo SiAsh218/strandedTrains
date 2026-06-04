@@ -49,6 +49,8 @@ class Table {
   renderStrandedTrainsTable(data) {
     if (!this.tableStrandedTrains) return;
 
+    console.log(data);
+
     const tableBody = this.tableStrandedTrains.querySelector("tbody");
     if (!tableBody) return;
 

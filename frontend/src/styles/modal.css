@@ -168,3 +168,12 @@
     transform: translateY(0) scale(1);
   }
 }
+
+.modal button svg {
+  color: #ffffff;
+  transition: color 0.2s ease;
+}
+
+.modal button svg:hover {
+  color: silver;
+}

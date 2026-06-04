@@ -191,7 +191,7 @@ document.addEventListener("click", async (e) => {
 // =========================
 statusSelect.addEventListener("change", (e) => {
   const value = statusSelect.value;
-  if (value === "Rescued") {
+  if (value === "Resolved") {
     setInputToNow(rescuedAtInput);
     document.getElementById("input--rescued-at").disabled = false;
   } else {

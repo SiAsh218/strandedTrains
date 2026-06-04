@@ -102,7 +102,7 @@ class Form {
       lastContactPerson: this.getInputValuebyId("input--last-contact-person"),
       contactRecord:
         `${this.getInputValuebyId("input--contact-record")}${this.lastUpdatedInfoChanged() ? `\n${this.formatLastUpdatedInfo()}` : ""}`.trim(),
-      showDeletionFlag: this.getInputValuebyId("input--status") === "Rescued",
+      showDeletionFlag: this.getInputValuebyId("input--status") === "Resolved",
       lastUpdated: new Date().toISOString(),
     };
   }
