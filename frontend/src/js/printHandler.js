@@ -23,7 +23,7 @@ class PrintHandler {
           <div class="row inline-group">
             <div class="label">Headcode</div>
             <div class="value">${data.headcode}</div>
-            <div class="label">Stood At</div>
+            <div class="label">Came To A Stand At</div>
             <div class="value">${new Date(data.strandedAt).toLocaleString()}</div>
           </div>
           <div class="row inline-group">
@@ -35,8 +35,14 @@ class PrintHandler {
           <div class="row inline-group">
             <div class="label">Location</div>
             <div class="value">${data.location}</div>
-            <div class="label">W3W</div>
+            <div class="label">Location (W3W)</div>
             <div class="value">${data.locationW3W}</div>
+          </div>
+          <div class="row inline-group">
+            <div class="label">TOLO</div>
+            <div class="value">${data.tolo}</div>
+            <div class="label"></div>
+            <div class="value" style="border-bottom: none"></div>
           </div>
         </div>
         <div class="section" >
@@ -81,16 +87,16 @@ class PrintHandler {
         <div class="section" >
           <h2>Plan</h2>
           <div class="row inline-group">
-            <div class="label">Plan A</div>
-            <div class="value">${data.planA}</div>
+            <div class="label" style="width: 10%">Plan A</div>
+            <div class="value" style="width: 90%">${data.planA}</div>
           </div>
           <div class="row inline-group">
-            <div class="label">Plan B</div>
-            <div class="value">${data.planB}</div>
+            <div class="label" style="width: 10%">Plan B</div>
+            <div class="value" style="width: 90%">${data.planB}</div>
           </div>
           <div class="row inline-group">
-            <div class="label">Plan C</div>
-            <div class="value">${data.planC}</div>
+            <div class="label" style="width: 10%">Plan C</div>
+            <div class="value" style="width: 90%">${data.planC}</div>
           </div>
         </div>
         <div class="section" >
