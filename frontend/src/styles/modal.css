@@ -58,6 +58,10 @@
   padding: 4px 8px;
 }
 
+.modal-close:hover {
+  color: silver;
+}
+
 /* Form body */
 .modal-form {
   padding: 20px;
