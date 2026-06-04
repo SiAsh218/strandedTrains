@@ -186,14 +186,18 @@ class Form {
 
   disableForm(form) {
     form
-      .querySelectorAll("input, button, select, textarea")
-      .forEach((el) => (el.disabled = true));
+      .querySelectorAll("input, button, textarea")
+      .forEach((el) => (el.readOnly = true));
+
+    form.querySelectorAll("select").forEach((el) => (el.disabled = true));
   }
 
   enableForm(form) {
     form
       .querySelectorAll("input, button, select, textarea")
-      .forEach((el) => (el.disabled = false));
+      .forEach((el) => (el.readOnly = false));
+
+    form.querySelectorAll("select").forEach((el) => (el.disabled = false));
   }
 
   getInputValuebyId(id) {

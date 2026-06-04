@@ -177,3 +177,9 @@
 .modal button svg:hover {
   color: silver;
 }
+
+.modal select:disabled {
+  opacity: 1;
+  color: black;
+  background-color: white;
+}
