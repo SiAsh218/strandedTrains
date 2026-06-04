@@ -184,6 +184,18 @@ class Form {
     return `${day} ${month} ${year} ${hours}:${minutes}`;
   }
 
+  disableForm(form) {
+    form
+      .querySelectorAll("input, button, select, textarea")
+      .forEach((el) => (el.disabled = true));
+  }
+
+  enableForm(form) {
+    form
+      .querySelectorAll("input, button, select, textarea")
+      .forEach((el) => (el.disabled = false));
+  }
+
   getInputValuebyId(id) {
     return document.getElementById(id).value;
   }
