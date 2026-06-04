@@ -159,7 +159,9 @@ class Form {
     form.querySelector("#input--last-updated").value = new Date(
       data.lastUpdated,
     ).toLocaleString();
+    form.querySelector("#input--created-by").value = data.createdByRole;
     form.querySelector("#form-group--last-updated").classList.remove("hidden");
+    form.querySelector("#form-group--created-by").classList.remove("hidden");
   }
 
   /**

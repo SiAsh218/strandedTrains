@@ -111,6 +111,7 @@ document.addEventListener("click", async (e) => {
       form.dataset.mode = "new";
       form.dataset.databaseId = "";
       form.querySelector("#form-group--last-updated").classList.add("hidden");
+      form.querySelector("#form-group--created-by").classList.add("hidden");
       myForm.enableForm(form);
       openModal();
     } else if (button.id === "btn-login") {
@@ -181,8 +182,6 @@ document.addEventListener("click", async (e) => {
     // const data = strandedTrains[index];
     myForm.setFormMode(form, "edit");
     myForm.setId(form, id);
-
-    console.log("canEdit:", strandedTrain.canEdit);
 
     if (strandedTrain.canEdit) {
       myForm.enableForm(form);
