@@ -295,6 +295,7 @@
           data-mode="new"
           data-database-id=""
         >
+          <h3>General Information</h3>
           <div class="form-group-row">
             <div class="form-group">
               <label
@@ -368,6 +369,47 @@
           <div class="form-group-row">
             <div class="form-group">
               <label
+                class="required"
+                data-error="Status is a required field"
+                for="input--status"
+                >Status</label
+              >
+              <select id="input--status" name="status">
+                <option value=""></option>
+                <option value="Stranded">Stranded</option>
+                <option value="Trapped">Trapped</option>
+                <option value="Evacuation">Evacuation</option>
+                <option value="Resolved">On The Move</option>
+              </select>
+            </div>
+
+            <div
+              class="form-group form-group--rescued-at"
+              id="form-group--rescued-at"
+            >
+              <label for="input--rescued-at">On The Move At</label>
+              <input
+                type="datetime-local"
+                id="input--rescued-at"
+                disabled
+                name="rescued-at"
+              />
+            </div>
+            <div class="form-group">
+              <label for="input--tolo">TOLO Assigned</label>
+              <select id="input--tolo" name="tolo">
+                <option value=""></option>
+                <option value="Assigned">Assigned</option>
+                <option value="On Route">On Route</option>
+                <option value="Not Assigned">Not Assigned</option>
+              </select>
+            </div>
+          </div>
+
+          <h3>Contact Information</h3>
+          <div class="form-group-row">
+            <div class="form-group">
+              <label
                 data-error="Contact On Train is a required field"
                 class="required"
                 for="input--contact"
@@ -410,44 +452,30 @@
 
           <div class="form-group-row">
             <div class="form-group">
-              <label
-                class="required"
-                data-error="Status is a required field"
-                for="input--status"
-                >Status</label
+              <label for="input--stranded-train-champion"
+                >Stranded Train Champion</label
               >
-              <select id="input--status" name="status">
-                <option value=""></option>
-                <option value="Stranded">Stranded</option>
-                <option value="Trapped">Trapped</option>
-                <option value="Evacuation">Evacuation</option>
-                <option value="Resolved">On The Move</option>
-              </select>
-            </div>
-
-            <div
-              class="form-group form-group--rescued-at"
-              id="form-group--rescued-at"
-            >
-              <label for="input--rescued-at">On The Move At</label>
               <input
-                type="datetime-local"
-                id="input--rescued-at"
-                disabled
-                name="rescued-at"
+                type="text"
+                id="input--stranded-train-champion"
+                name="stranded-train-champion"
               />
             </div>
 
             <div class="form-group">
-              <label for="input--tolo">TOLO Assigned</label>
-              <select id="input--tolo" name="tolo">
-                <option value=""></option>
-                <option value="Assigned">Assigned</option>
-                <option value="On Route">On Route</option>
-                <option value="Not Assigned">Not Assigned</option>
-              </select>
+              <label for="input--champion-no">Champion No</label>
+              <input
+                class="input-hide-number-arrows"
+                type="number"
+                inputmode="numeric"
+                id="input--champion-no"
+                name="champion-no"
+              />
             </div>
+            <div class="form-group"></div>
           </div>
+
+          <h3>Passenger Considerations</h3>
 
           <div class="form-group-row">
             <div class="form-group">
@@ -568,15 +596,6 @@
 
           <div class="form-group-row">
             <div class="form-group">
-              <label for="input--pa-working">PA Working</label>
-              <select id="input--pa-working" name="pa-working">
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="form-group">
               <label for="input--catering-available">Catering Available</label>
               <select id="input--catering-available" name="catering-available">
                 <option value=""></option>
@@ -585,34 +604,18 @@
                 <option value="N/A">N/A</option>
               </select>
             </div>
-
-            <div class="form-group"></div>
-          </div>
-
-          <div class="form-group-row">
             <div class="form-group">
-              <label for="input--stranded-train-champion"
-                >Stranded Train Champion</label
-              >
-              <input
-                type="text"
-                id="input--stranded-train-champion"
-                name="stranded-train-champion"
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="input--champion-no">Champion No</label>
-              <input
-                class="input-hide-number-arrows"
-                type="number"
-                inputmode="numeric"
-                id="input--champion-no"
-                name="champion-no"
-              />
+              <label for="input--pa-working">PA Working</label>
+              <select id="input--pa-working" name="pa-working">
+                <option value=""></option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
             </div>
             <div class="form-group"></div>
           </div>
+
+          <h3>Plan</h3>
 
           <div class="form-group-row">
             <div class="form-group">
@@ -631,6 +634,7 @@
             </div>
           </div>
 
+          <h3>Additional Information</h3>
           <div class="form-group-row">
             <div class="form-group">
               <label for="input--other-affected-trains"

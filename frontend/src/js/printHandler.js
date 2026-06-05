@@ -24,7 +24,7 @@ class PrintHandler {
             <div class="label">Headcode</div>
             <div class="value">${data.headcode}</div>
             <div class="label">Came To A Stand</div>
-            <div class="value">${new Date(data.strandedAt).toLocaleString()}</div>
+            <div class="value">${!data.strandedAt ? "" : new Date(data.strandedAt).toLocaleString()}</div>
           </div>
           <div class="row inline-group">
             <div class="label">Traction</div>

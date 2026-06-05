@@ -135,6 +135,10 @@ class Table {
           vulnerableRag = "";
       }
 
+      const planText = `${!row.planA ? "" : `<b>Plan A</b><br>${row.planA.trim().replace(/\n/g, "<br>")}<br>`}
+              ${!row.planB ? "" : `<b>Plan B</b><br>${row.planB.trim().replace(/\n/g, "<br>")}<br>`}
+              ${!row.planC ? "" : `<b>Plan C</b><br>${row.planC.trim().replace(/\n/g, "<br>")}`}</td>`;
+
       markup += `
         <tr class="table-row" data-database-id="${row.id}">
          
@@ -165,9 +169,7 @@ class Table {
 
           <td>${row.tolo}</td>
           <td>${row.strandedTrainChampion}</td>
-          <td>${row.planA ? `<b>Plan A</b><br>${row.planA.trim()}<br>` : ""}
-              ${row.planB ? `<b>Plan B</b><br>${row.planB.trim()}<br>` : ""}
-              ${row.planC ? `<b>Plan C</b><br>${row.planC.trim()}` : ""}</td>
+          <td>${planText}
           </td>
 
           <td>
