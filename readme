@@ -2,13 +2,15 @@
 
 ## Overview
 
-A web app for tracking stranded trains, designed for rail control rooms
+A web app for tracking stranded trains, designed for railway control rooms
 
 ## Feature
 
-- Track stranded train status
-- Track stranded train duration
+- Track stranded train status and duration
+- Carry out stranded passenger risk assessment
 - Alert over due communication with the stranded train
+- Export individual stranded train data to PDF
+- Export all data via API
 
 ## Tech Stack
 

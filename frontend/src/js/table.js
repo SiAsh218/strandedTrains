@@ -27,23 +27,6 @@ class Table {
    *
    * @param {Array<Object>} data
    * Array of stranded train objects.
-   *
-   * Expected object structure:
-   * {
-   *   headcode: string,
-   *   location: string,
-   *   strandedAt: string|Date,
-   *   rescuedAt?: string|Date,
-   *   status: string,
-   *   passengerLoading: string,
-   *   toiletsWorking: string,
-   *   vulnerablePeople: string,
-   *   riskAssessment: string,
-   *   plan: string,
-   *   contact: string,
-   *   showDeletionFlag: boolean
-   * }
-   *
    * @returns {void}
    */
   renderStrandedTrainsTable(data) {
@@ -135,6 +118,7 @@ class Table {
           vulnerableRag = "";
       }
 
+      // formatting the plan text to render correctly in the table
       const planText = `${!row.planA ? "" : `<b>Plan A</b><br>${row.planA.trim().replace(/\n/g, "<br>")}<br>`}
               ${!row.planB ? "" : `<b>Plan B</b><br>${row.planB.trim().replace(/\n/g, "<br>")}<br>`}
               ${!row.planC ? "" : `<b>Plan C</b><br>${row.planC.trim().replace(/\n/g, "<br>")}`}</td>`;
