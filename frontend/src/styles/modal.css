@@ -99,6 +99,7 @@
 
 .form-group--2 {
   flex: 2;
+  max-width: 371px;
 }
 
 .form-group label {
