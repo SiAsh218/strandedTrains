@@ -53,11 +53,16 @@
       <div id="div-print--strandedTrains" class="div-print print-only"></div>
       <div style="padding: 10px 10px">
         <div id="popup" class="popup">
-          <div class="popup-box">
+          <div
+            class="{{if_isLoggedIn}} {{else}}hidden{{/if_isLoggedIn}}"
+            class="popup-box"
+          >
             There are currently no stranded trains recorded on the network
           </div>
         </div>
-        <table class="table--stranded-trains hidden">
+        <table
+          class="table--stranded-trains {{if_isLoggedIn}} {{else}}hidden{{/if_isLoggedIn}}"
+        >
           <thead>
             <tr>
               <th style="width: 50px">H/C</th>
