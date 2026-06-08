@@ -66,8 +66,7 @@ const parseCookies = (req) => {
 };
 
 // =========================
-// CORE: GET USER FROM REQUEST
-// (single source of truth)
+// GET USER FROM REQUEST
 // =========================
 const getUserFromRequest = (req) => {
   const cookies = parseCookies(req);
@@ -120,19 +119,17 @@ const logout = (req, res) => {
 };
 
 // =========================
-// CHECK IF LOGGED IN
+// CHECK LOGIN
 // =========================
 const isLoggedIn = (req) => {
   return !!getUserFromRequest(req);
 };
 
 // =========================
-// AUTH MIDDLEWARE (REQUIRED LOGIN)
+// REQUIRE AUTH
 // =========================
 const requireAuth = (req, res) => {
-  const user = getUserFromRequest(req);
-
-  if (!user) {
+  if (!req.user) {
     res.writeHead(401, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
@@ -143,18 +140,15 @@ const requireAuth = (req, res) => {
     return false;
   }
 
-  req.user = user;
   return true;
 };
 
 // =========================
-// AUTH MIDDLEWARE (RBAC)
+// REQUIRE PERMISSION (RBAC)
 // =========================
 const requirePermission = (permissionKey) => {
   return (req, res) => {
-    const user = getUserFromRequest(req);
-
-    if (!user) {
+    if (!req.user) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
@@ -165,15 +159,13 @@ const requirePermission = (permissionKey) => {
       return false;
     }
 
-    req.user = user;
-
     const allowedRoles = PERMISSIONS[permissionKey];
 
     if (!allowedRoles) {
       throw new Error(`Unknown permission: ${permissionKey}`);
     }
 
-    if (!allowedRoles.includes(user.role)) {
+    if (!allowedRoles.includes(req.user.role)) {
       res.writeHead(403, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
@@ -189,7 +181,7 @@ const requirePermission = (permissionKey) => {
 };
 
 // =========================
-// OPTIONAL HELPER (UI ONLY)
+// OPTIONAL ROLE CHECK
 // =========================
 const hasRole = (req, roles = []) => {
   const user = getUserFromRequest(req);

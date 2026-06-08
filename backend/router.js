@@ -15,13 +15,15 @@ class Router {
 
     try {
       // =========================
+      // SINGLE SOURCE OF TRUTH FOR USER
+      // =========================
+      req.user = auth.getUserFromRequest(req);
+
+      // =========================
       // VIEW ROUTES
       // =========================
       if (req.url === "/" && req.method === "GET") {
-        const isLoggedIn = auth.isLoggedIn(req);
-
-        const user = auth.getUserFromRequest(req);
-        console.log(user);
+        const isLoggedIn = !!req.user;
 
         const template = await templateEngine.readFileUtf8(
           path.join(viewController.viewsPath, "index.html"),
@@ -33,8 +35,10 @@ class Router {
 
         await viewController.render(template, res, {
           strandedTrains,
-          isLoggedIn: isLoggedIn && user?.role !== "viewer",
+          isLoggedIn: isLoggedIn && req.user?.role !== "viewer",
         });
+
+        return;
       }
 
       // =========================
@@ -60,22 +64,21 @@ class Router {
           "Content-Type": "application/json",
         });
 
-        res.end(JSON.stringify({ success: true }));
+        return res.end(JSON.stringify({ success: true }));
       } else if (req.url === "/api/logout" && req.method === "POST") {
-        auth.logout(req, res);
+        return auth.logout(req, res);
       }
 
       // =========================
       // DATA ROUTES
       // =========================
 
-      // GET ACTIVE (READ)
+      // GET ACTIVE
       else if (req.url === "/api/stranded-trains" && req.method === "GET") {
         if (!auth.requirePermission("read")(req, res)) return;
 
         const data = await dataController.getActive();
 
-        // viewer restriction (hide sensitive fields only)
         if (req.user.role === "viewer") {
           for (const item of data) {
             item.contactNo = "";
@@ -88,7 +91,7 @@ class Router {
         return res.end(JSON.stringify(data));
       }
 
-      // GET ALL (READ)
+      // GET ALL
       else if (req.url === "/api/all-stranded-trains" && req.method === "GET") {
         if (!auth.requirePermission("read")(req, res)) return;
 
@@ -98,7 +101,7 @@ class Router {
         return res.end(JSON.stringify(data));
       }
 
-      // GET BY ID (READ)
+      // GET BY ID
       else if (
         req.url.startsWith("/api/stranded-trains/") &&
         req.method === "GET"
@@ -118,7 +121,7 @@ class Router {
         return res.end(JSON.stringify(data));
       }
 
-      // CREATE (WRITE)
+      // CREATE
       else if (req.url === "/api/stranded-trains" && req.method === "POST") {
         if (!auth.requirePermission("write")(req, res)) return;
 
@@ -130,7 +133,6 @@ class Router {
         const result = await dataController.create(body);
 
         res.writeHead(200, { "Content-Type": "application/json" });
-
         return res.end(
           JSON.stringify({
             success: true,
@@ -139,7 +141,7 @@ class Router {
         );
       }
 
-      // UPDATE (WRITE)
+      // UPDATE
       else if (
         req.url.startsWith("/api/stranded-trains/") &&
         req.method === "PUT"
@@ -147,15 +149,13 @@ class Router {
         if (!auth.requirePermission("write")(req, res)) return;
 
         const id = req.url.split("/").pop();
-        const existing = await dataController.getById(id);
-
         const body = await dataController.parseBody(req);
+
         body.updatedByRole = req.user.role;
 
         const result = await dataController.update(id, body);
 
         res.writeHead(200, { "Content-Type": "application/json" });
-
         return res.end(
           JSON.stringify({
             success: true,
@@ -163,6 +163,7 @@ class Router {
           }),
         );
       }
+
       // =========================
       // USER DATA
       // =========================
@@ -171,7 +172,7 @@ class Router {
 
         res.writeHead(200, { "Content-Type": "application/json" });
 
-        res.end(
+        return res.end(
           JSON.stringify({
             username: req.user.username,
             role: req.user.role,
@@ -193,7 +194,7 @@ class Router {
       res.end(
         JSON.stringify({
           success: false,
-          error: err.message,
+          error: "Internal Server Error",
         }),
       );
     }
