@@ -149,8 +149,21 @@ class Router {
         if (!auth.requirePermission("write")(req, res)) return;
 
         const id = req.url.split("/").pop();
-        const body = await dataController.parseBody(req);
 
+        const existing = await dataController.getById(id);
+
+        // ownership check
+        if (!auth.canEditRecord(req.user, existing)) {
+          res.writeHead(403, { "Content-Type": "application/json" });
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: `Entry was created by user '${existing.createdByRole}' you don't have permission to edit this entry`,
+            }),
+          );
+        }
+
+        const body = await dataController.parseBody(req);
         body.updatedByRole = req.user.role;
 
         const result = await dataController.update(id, body);

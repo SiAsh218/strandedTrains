@@ -189,6 +189,16 @@ const hasRole = (req, roles = []) => {
   return roles.includes(user.role);
 };
 
+const canEditRecord = (user, record) => {
+  if (!user || !record) return false;
+
+  // admin can edit everything
+  if (user.role === "admin") return true;
+
+  // must match creator role
+  return user.role === record.createdByRole;
+};
+
 // =========================
 // EXPORTS
 // =========================
@@ -200,4 +210,5 @@ module.exports = {
   requirePermission,
   hasRole,
   getUserFromRequest,
+  canEditRecord,
 };
