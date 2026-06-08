@@ -87,6 +87,24 @@ class Router {
       // GET ALL Active
       else if (req.url === "/api/stranded-trains" && req.method === "GET") {
         const data = await dataController.getActive();
+
+        const isLoggedIn = await auth.isLoggedIn(req);
+
+        // Only show contact info if the user is logged in
+        if (!isLoggedIn) {
+          for (const item of data) {
+            item.contactNo = "";
+            item.responderNo = "";
+            item.championNo = "";
+          }
+
+          data.canEdit = false;
+        } else {
+          data.canEdit = true;
+        }
+
+        console.log(data);
+
         res.writeHead(200, {
           "Content-Type": "application/json",
         });
@@ -97,6 +115,7 @@ class Router {
       // GET ALL
       else if (req.url === "/api/all-stranded-trains" && req.method === "GET") {
         const data = await dataController.getAll();
+
         res.writeHead(200, {
           "Content-Type": "application/json",
         });
