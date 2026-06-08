@@ -118,6 +118,8 @@ class Router {
         // Only show contact info if the user has permission to edit (i.e. they are the same role as the creator or an admin)
         if (!auth.canEdit(req.user, data.createdByRole)) {
           data.contactNo = "";
+          data.responderNo = "";
+          data.championNo = "";
           data.canEdit = false;
         } else {
           data.canEdit = true;
