@@ -1,7 +1,9 @@
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
-// Replace with database
+// =========================
+// USERS (replace with DB later)
+// =========================
 const USERS = [
   {
     username: "admin",
@@ -27,49 +29,70 @@ const USERS = [
     passwordHash:
       "$2b$10$..yFPKcTfJdAvSx6MOkK0OH3e3nMzhjWRPDh8EvJJFUqJSpRfEImO",
   },
+  {
+    username: "vieweruser",
+    role: "viewer",
+    passwordHash:
+      "$2b$10$yg9e.j81UA07myHOCjjb6eJ8PN6P1HxKsarE4rYeH4fhIdo3ZZtc2",
+  },
 ];
 
-const isLoggedIn = (req) => {
-  const cookies = parseCookies(req);
-
-  const sessionId = cookies.sessionId;
-
-  if (!sessionId) {
-    return false;
-  }
-
-  return sessions.has(sessionId);
+// =========================
+// ROLE PERMISSIONS
+// =========================
+const PERMISSIONS = {
+  read: ["admin", "gwr", "xc", "gts", "viewer"],
+  write: ["admin", "gwr", "xc", "gts"],
+  admin: ["admin"],
 };
 
+// =========================
+// SESSION STORE
+// =========================
 const sessions = new Map();
 
+// =========================
+// COOKIE PARSER
+// =========================
 const parseCookies = (req) => {
   const header = req.headers.cookie;
-
   if (!header) return {};
 
   return header.split(";").reduce((acc, cookie) => {
-    const parts = cookie.split("=");
-
-    acc[parts[0].trim()] = decodeURIComponent(parts[1]);
-
+    const [key, ...v] = cookie.split("=");
+    acc[key.trim()] = decodeURIComponent(v.join("="));
     return acc;
   }, {});
 };
 
+// =========================
+// CORE: GET USER FROM REQUEST
+// (single source of truth)
+// =========================
+const getUserFromRequest = (req) => {
+  const cookies = parseCookies(req);
+  const sessionId = cookies.sessionId;
+
+  if (!sessionId) return null;
+  if (!sessions.has(sessionId)) return null;
+
+  return sessions.get(sessionId);
+};
+
+// =========================
+// AUTH: LOGIN
+// =========================
 const authenticate = async (username, password) => {
   const user = USERS.find((u) => u.username === username);
-
   if (!user) return null;
 
   const valid = await bcrypt.compare(password, user.passwordHash);
-
   if (!valid) return null;
 
   const sessionId = crypto.randomUUID();
 
   sessions.set(sessionId, {
-    username,
+    username: user.username,
     role: user.role,
     created: Date.now(),
   });
@@ -77,69 +100,15 @@ const authenticate = async (username, password) => {
   return sessionId;
 };
 
-const addUserRoleToReq = (req) => {
-  const cookies = parseCookies(req);
-
-  const sessionId = cookies.sessionId;
-
-  if (sessionId && sessions.has(sessionId)) {
-    req.user = sessions.get(sessionId);
-    return;
-  } else {
-    req.user = null;
-    return;
-  }
-};
-
-const requireAuth = (req, res) => {
-  const cookies = parseCookies(req);
-
-  const sessionId = cookies.sessionId;
-
-  if (!sessionId || !sessions.has(sessionId)) {
-    res.writeHead(401, {
-      "Content-Type": "application/json",
-    });
-
-    res.end(
-      JSON.stringify({
-        success: false,
-        error: "Authentication required",
-      }),
-    );
-
-    return false;
-  }
-
-  req.user = sessions.get(sessionId);
-
-  return true;
-};
-
-const canEdit = (user, targetRole) => {
-  console.log(
-    "Checking permissions for user:",
-    user,
-    "targetRole:",
-    targetRole,
-  );
-
-  if (!user || !user.role) {
-    return false;
-  }
-
-  if (user.role === "admin") {
-    return true;
-  }
-
-  return user.role === targetRole;
-};
-
+// =========================
+// AUTH: LOGOUT
+// =========================
 const logout = (req, res) => {
   const cookies = parseCookies(req);
+  const sessionId = cookies.sessionId;
 
-  if (cookies.sessionId) {
-    sessions.delete(cookies.sessionId);
+  if (sessionId) {
+    sessions.delete(sessionId);
   }
 
   res.writeHead(200, {
@@ -150,11 +119,93 @@ const logout = (req, res) => {
   res.end(JSON.stringify({ success: true }));
 };
 
+// =========================
+// CHECK IF LOGGED IN
+// =========================
+const isLoggedIn = (req) => {
+  return !!getUserFromRequest(req);
+};
+
+// =========================
+// AUTH MIDDLEWARE (REQUIRED LOGIN)
+// =========================
+const requireAuth = (req, res) => {
+  const user = getUserFromRequest(req);
+
+  if (!user) {
+    res.writeHead(401, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        success: false,
+        error: "Authentication required",
+      }),
+    );
+    return false;
+  }
+
+  req.user = user;
+  return true;
+};
+
+// =========================
+// AUTH MIDDLEWARE (RBAC)
+// =========================
+const requirePermission = (permissionKey) => {
+  return (req, res) => {
+    const user = getUserFromRequest(req);
+
+    if (!user) {
+      res.writeHead(401, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          success: false,
+          error: "Authentication required",
+        }),
+      );
+      return false;
+    }
+
+    req.user = user;
+
+    const allowedRoles = PERMISSIONS[permissionKey];
+
+    if (!allowedRoles) {
+      throw new Error(`Unknown permission: ${permissionKey}`);
+    }
+
+    if (!allowedRoles.includes(user.role)) {
+      res.writeHead(403, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({
+          success: false,
+          error: "Forbidden",
+        }),
+      );
+      return false;
+    }
+
+    return true;
+  };
+};
+
+// =========================
+// OPTIONAL HELPER (UI ONLY)
+// =========================
+const hasRole = (req, roles = []) => {
+  const user = getUserFromRequest(req);
+  if (!user) return false;
+  return roles.includes(user.role);
+};
+
+// =========================
+// EXPORTS
+// =========================
 module.exports = {
   authenticate,
-  requireAuth,
   logout,
   isLoggedIn,
-  canEdit,
-  addUserRoleToReq,
+  requireAuth,
+  requirePermission,
+  hasRole,
+  getUserFromRequest,
 };

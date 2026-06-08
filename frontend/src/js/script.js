@@ -85,6 +85,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   if (result.success) {
     myAlert.render("Login successful!", "success", 2);
+    window.location.href = "/";
     document.getElementById("btn-add").classList.remove("hidden");
     updateDurations();
     // window.location.reload();
@@ -183,10 +184,12 @@ document.addEventListener("click", async (e) => {
     myForm.setFormMode(form, "edit");
     myForm.setId(form, id);
 
-    if (strandedTrain.canEdit) {
-      myForm.enableForm(form);
-    } else {
+    const me = await fetch("/api/me").then((r) => r.json());
+
+    if (me.role === "viewer") {
       myForm.disableForm(form);
+    } else {
+      myForm.enableForm(form);
     }
 
     openModal();
@@ -338,6 +341,11 @@ const getStrandedTrains = async () => {
       method: "GET",
     });
 
+    if (response.status === 401) {
+      loginForm.closest("#modalLoginBackdrop").classList.remove("hidden");
+      return [];
+    }
+
     if (!response.ok) throw new Error("Failed to fetch stranded trains");
 
     return await response.json();
@@ -353,6 +361,11 @@ const getStrandedTrainById = async (id) => {
     const response = await fetch(`/api/stranded-trains/${id}`, {
       method: "GET",
     });
+
+    if (response.status === 401) {
+      loginForm.classList.remove("hidden");
+      return [];
+    }
 
     if (!response.ok) throw new Error("Failed to fetch stranded train by ID");
 
