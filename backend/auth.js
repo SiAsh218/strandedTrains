@@ -37,6 +37,13 @@ const USERS = [
   },
 ];
 
+const SERVICE_USERS = {
+  powerbi: {
+    username: "powerbi",
+    role: "viewer",
+  },
+};
+
 // =========================
 // ROLE PERMISSIONS
 // =========================
@@ -69,6 +76,13 @@ const parseCookies = (req) => {
 // GET USER FROM REQUEST
 // =========================
 const getUserFromRequest = (req) => {
+  const apiUser = getApiUser(req);
+
+  if (apiUser) {
+    return apiUser;
+  }
+
+  // Existing session cookie logic
   const cookies = parseCookies(req);
   const sessionId = cookies.sessionId;
 
@@ -116,6 +130,26 @@ const logout = (req, res) => {
   });
 
   res.end(JSON.stringify({ success: true }));
+};
+
+const getApiUser = (req) => {
+  const apiKey = req.headers["x-api-key"];
+
+  console.log("apiKey", apiKey);
+  console.log("keyApi", process.env.POWERBI_API_KEY);
+
+  if (!apiKey) return null;
+
+  console.log("valid key", apiKey === process.env.POWERBI_API_KEY);
+
+  if (apiKey === process.env.POWERBI_API_KEY) {
+    return {
+      username: "powerbi",
+      role: "viewer",
+    };
+  }
+
+  return null;
 };
 
 // =========================

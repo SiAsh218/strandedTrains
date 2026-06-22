@@ -121,6 +121,27 @@ class Router {
         return res.end(JSON.stringify(data));
       }
 
+      // =========================
+      // POWER BI REPORTING ROUTE
+      // =========================
+      else if (
+        req.url === "/api/reporting/stranded-trains" &&
+        req.method === "GET"
+      ) {
+        if (!auth.requirePermission("read")(req, res)) return;
+
+        const data = await dataController.getAll();
+
+        data.forEach((d) => {
+          d.contactNo = null;
+          d.responderNo = null;
+          d.championNo = null;
+        });
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify(data));
+      }
+
       // CREATE
       else if (req.url === "/api/stranded-trains" && req.method === "POST") {
         if (!auth.requirePermission("write")(req, res)) return;

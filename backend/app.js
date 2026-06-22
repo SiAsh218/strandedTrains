@@ -5,6 +5,7 @@
 // =========================
 
 const config = require("../config.json");
+require("dotenv").config();
 
 const http = require("http");
 const path = require("path");
