@@ -135,12 +135,7 @@ const logout = (req, res) => {
 const getApiUser = (req) => {
   const apiKey = req.headers["x-api-key"];
 
-  console.log("apiKey", apiKey);
-  console.log("keyApi", process.env.POWERBI_API_KEY);
-
   if (!apiKey) return null;
-
-  console.log("valid key", apiKey === process.env.POWERBI_API_KEY);
 
   if (apiKey === process.env.POWERBI_API_KEY) {
     return {

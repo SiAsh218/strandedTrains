@@ -114,14 +114,13 @@ document.addEventListener("click", async (e) => {
       form.querySelector("#form-group--last-updated").classList.add("hidden");
       form.querySelector("#form-group--created-by").classList.add("hidden");
       myForm.enableForm(form);
+      setInputToNow(strandedAtInput);
       openModal();
     } else if (button.id === "btn-login") {
       document.getElementById("modalLoginBackdrop").classList.remove("hidden");
     } else if (button.id === "btn-copy-to-clipboard") {
       copyToClipboard();
     } else if (button.id === "btn-print-stranded-train") {
-      // TODO: print code
-
       printHandler.deactivatePrintDivs();
       const div = document.getElementById("div-print--strandedTrains");
       printHandler.activatePrintDiv(div);
@@ -403,7 +402,7 @@ const hideEditButtons = () => {
 };
 
 const getDataForCopyToTyrell = (data) => {
-  console.log("Generating data for copy to Tyrell with input:", data);
+  // console.log("Generating data for copy to Tyrell with input:", data);
   return `<b>${data.headcode}</b> is <b>${data.status}</b> at <b>${data.location}</b> ${data.locationW3W ? `(W3W - ${data.locationW3W})` : ""}<br><br>
   
   <b>Train Info:</b><br>

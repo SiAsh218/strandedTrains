@@ -61,23 +61,67 @@ class Table {
 
       let durationRag = "";
 
-      const lastContactFormatted = this.formatDateTime(row.lastContact);
-      const lastContactDuration = !this.isDevMode()
-        ? this.timeDiff(lastContactFormatted)
-        : this.timeDiff(
-            lastContactFormatted,
-            this.formatDateTime(this.getDevTime()),
-          );
-      const lastContactMinutes = this.durationToMinutes(lastContactDuration);
+      // TODO: From Here
 
-      const lastContactRag =
-        row.status === "Resolved"
-          ? ""
-          : lastContactMinutes >= 30
-            ? "flashing-red"
-            : lastContactMinutes >= 20
-              ? "flashing-amber"
-              : "";
+      // Contact flashing logic
+      let lastContactRag = "";
+
+      if (row.status !== "Resolved") {
+        // If we have a Last Contact time, use the existing logic
+        if (row.lastContact) {
+          const lastContactFormatted = this.formatDateTime(row.lastContact);
+
+          const lastContactDuration = !this.isDevMode()
+            ? this.timeDiff(lastContactFormatted)
+            : this.timeDiff(
+                lastContactFormatted,
+                this.formatDateTime(this.getDevTime()),
+              );
+
+          const lastContactMinutes =
+            this.durationToMinutes(lastContactDuration);
+
+          if (lastContactMinutes >= 30) {
+            lastContactRag = "flashing-red";
+          } else if (lastContactMinutes >= 20) {
+            lastContactRag = "flashing-amber";
+          }
+        }
+        // If no Last Contact time exists, use Stranded At instead
+        else if (row.strandedAt) {
+          const strandedDuration = !this.isDevMode()
+            ? this.timeDiff(strandedFormatted)
+            : this.timeDiff(
+                strandedFormatted,
+                this.formatDateTime(this.getDevTime()),
+              );
+
+          const strandedMinutes = this.durationToMinutes(strandedDuration);
+
+          if (strandedMinutes >= 5) {
+            lastContactRag = "flashing-red";
+          }
+        }
+      }
+
+      // const lastContactFormatted = this.formatDateTime(row.lastContact);
+      // const lastContactDuration = !this.isDevMode()
+      //   ? this.timeDiff(lastContactFormatted)
+      //   : this.timeDiff(
+      //       lastContactFormatted,
+      //       this.formatDateTime(this.getDevTime()),
+      //     );
+      // const lastContactMinutes = this.durationToMinutes(lastContactDuration);
+
+      // const lastContactRag =
+      //   row.status === "Resolved"
+      //     ? ""
+      //     : lastContactMinutes >= 30
+      //       ? "flashing-red"
+      //       : lastContactMinutes >= 20
+      //         ? "flashing-amber"
+      //         : "";
+      // TODO: to here
 
       const durationMinutes = this.durationToMinutes(duration);
       if (durationMinutes >= 60) {
