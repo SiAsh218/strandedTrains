@@ -472,9 +472,7 @@ const renderTable = () => {
 
 // Utility method to hide edit buttons for users who are not logged in
 const hideEditButtons = () => {
-  document.getElementById("btn-users").classList.contains("hidden");
-  document.getElementById("btn-add").classList.contains("hidden");
-  return;
+  return document.getElementById("btn-users").classList.contains("hidden");
 };
 
 const startSynchronizedUpdates = () => {
