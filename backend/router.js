@@ -312,6 +312,20 @@ class Router {
           );
         }
 
+        if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(body.password)) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error:
+                "Password must be at least 8 characters and contain both letters and numbers",
+            }),
+          );
+        }
+
         const passwordHash = await bcrypt.hash(body.password, 10);
 
         const result = usersRepository.create({
@@ -352,6 +366,20 @@ class Router {
             JSON.stringify({
               success: false,
               error: "Password is required",
+            }),
+          );
+        }
+
+        if (!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(body.password)) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error:
+                "Password must be at least 8 characters and contain both letters and numbers",
             }),
           );
         }
