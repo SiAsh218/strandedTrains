@@ -3,4 +3,4 @@ dist
 backend/database/app.db
 passwordGenerator.js
 .env
-backend/database/seed.js
+
