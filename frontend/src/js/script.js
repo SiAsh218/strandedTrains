@@ -28,7 +28,8 @@ const statusSelect = form.querySelector("#input--status");
 const strandedAtInput = form.querySelector("#input--stranded-at");
 const rescuedAtInput = form.querySelector("#input--rescued-at");
 const devTimeInput = document.getElementById("date-time--dev");
-const buttonCopyToClipboard = document.getElementById("btn-copy-to-clipboard");
+
+let strandedTrains = [];
 
 // =========================
 // Event Listeners
@@ -57,7 +58,6 @@ form.addEventListener("submit", async (e) => {
 
   await addStrandedTrain(formMode, data);
 
-  updateDurations();
   closeModal();
 });
 
@@ -83,7 +83,7 @@ loginForm.addEventListener("submit", async (e) => {
     myAlert.render("Login successful!", "success", 2);
     window.location.href = "/";
     document.getElementById("btn-add").classList.remove("hidden");
-    updateDurations();
+    refreshData();
     // window.location.reload();
   }
 
@@ -148,7 +148,7 @@ document.addEventListener("click", async (e) => {
             return;
           }
 
-          await updateDurations();
+          await refreshData();
         } catch (error) {
           console.error("Error deleting stranded train:", error);
           myAlert.render("Failed to delete stranded train", "error", 3);
@@ -214,7 +214,7 @@ devTimeInput.addEventListener("change", async () => {
   // const strandedTrains = await getStrandedTrains();
 
   // myTable.renderStrandedTrainsTable(strandedTrains);
-  updateDurations();
+  refreshData();
 });
 
 // =========================
@@ -261,8 +261,6 @@ const addStrandedTrain = async (mode, data) => {
       }
 
       data.priority = response.data.length + 1;
-
-      data.priority = response.data.length + 1;
     }
 
     const result = await strandedTrainsService.saveStrandedTrain(
@@ -277,7 +275,7 @@ const addStrandedTrain = async (mode, data) => {
       return;
     }
 
-    await updateDurations();
+    await refreshData();
   } catch (error) {
     console.error("Error adding/updating stranded train:", error);
 
@@ -296,34 +294,40 @@ const setInputToNow = (input) => {
   input.value = localNow;
 };
 
-const updateDurations = async () => {
+const refreshData = async () => {
   try {
     const response = await strandedTrainsService.getStrandedTrains();
 
     if (response.unauthorized) {
       document.getElementById("modalLoginBackdrop").classList.remove("hidden");
+
       return;
     }
 
-    const strandedTrains = response.data;
+    strandedTrains = response.data;
 
-    if (strandedTrains.length === 0) {
-      document.querySelector(".popup").classList.remove("hidden");
-      document.querySelector(".table--stranded-trains").classList.add("hidden");
-    } else {
-      document.querySelector(".popup").classList.add("hidden");
-
-      document
-        .querySelector(".table--stranded-trains")
-        .classList.remove("hidden");
-
-      myTable.renderStrandedTrainsTable(strandedTrains);
-    }
+    renderTable();
   } catch (error) {
-    console.error("Error updating durations:", error);
+    console.error("Error refreshing data:", error);
 
-    myAlert.render("Failed to update durations", "error", 3);
+    myAlert.render("Failed to refresh data", "error", 3);
   }
+};
+
+const renderTable = () => {
+  if (strandedTrains.length === 0) {
+    document.querySelector(".popup").classList.remove("hidden");
+
+    document.querySelector(".table--stranded-trains").classList.add("hidden");
+
+    return;
+  }
+
+  document.querySelector(".popup").classList.add("hidden");
+
+  document.querySelector(".table--stranded-trains").classList.remove("hidden");
+
+  myTable.renderStrandedTrainsTable(strandedTrains);
 };
 
 // Utility method to hide edit buttons for users who are not logged in
@@ -334,19 +338,18 @@ const hideEditButtons = () => {
 const startSynchronizedUpdates = () => {
   const now = new Date();
 
-  // Milliseconds until next minute
   const delay = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
 
   setTimeout(() => {
-    updateDurations(); // Run exactly on the minute
+    renderTable();
 
     setInterval(() => {
-      updateDurations();
+      renderTable();
     }, 60000);
   }, delay);
 };
 
-updateDurations();
+refreshData();
 
 // LOOP TO UPDATE DURATIONS EVERY MINUTE
 startSynchronizedUpdates();
@@ -354,11 +357,11 @@ startSynchronizedUpdates();
 const socket = io();
 
 socket.on("connect", () => {
-  console.log("Socket connected");
+  // console.log("Socket connected");
 });
 
 socket.on("stranded-trains-updated", async () => {
-  console.log("Realtime update received");
+  // console.log("Realtime update received");
 
-  await updateDurations();
+  await refreshData();
 });
