@@ -256,11 +256,15 @@ devTimeInput.addEventListener("change", async () => {
   refreshData();
 });
 
-// Click amin button
+// Click admin button
 adminButton.addEventListener("click", async (e) => {
   const users = await userService.getUsers();
 
   renderUsers(users);
+
+  document.getElementById("create-user-username").value = "";
+
+  document.getElementById("create-user-password").value = "";
 
   document.getElementById("modalUsersBackdrop").classList.remove("hidden");
 });
