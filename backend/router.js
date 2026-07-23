@@ -5,6 +5,8 @@
 const path = require("path");
 
 const socketManager = require("./socketManager");
+const usersRepository = require("./database/usersRepository");
+const bcrypt = require("bcrypt");
 
 const viewController = require("./controllers/viewController.js");
 const dataController = require("./controllers/dataController.js");
@@ -38,6 +40,7 @@ class Router {
         await viewController.render(template, res, {
           strandedTrains,
           isLoggedIn: isLoggedIn && req.user?.role !== "viewer",
+          isAdmin: req.user?.role === "admin",
         });
 
         return;
@@ -216,6 +219,198 @@ class Router {
           JSON.stringify({
             username: req.user.username,
             role: req.user.role,
+          }),
+        );
+      }
+
+      // =========================
+      // USER MANAGEMENT
+      // =========================
+
+      // GET ALL USERS
+      else if (req.url === "/api/users" && req.method === "GET") {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const users = usersRepository.getAll();
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(JSON.stringify(users));
+      }
+      // GET USER By ID
+      else if (req.url.startsWith("/api/users/") && req.method === "GET") {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const id = req.url.split("/").pop();
+
+        const user = usersRepository.getById(id);
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(JSON.stringify(user));
+      }
+
+      // CREATE USER
+      else if (req.url === "/api/users" && req.method === "POST") {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const body = await dataController.parseBody(req);
+
+        if (!body.username) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Username is required",
+            }),
+          );
+        }
+
+        if (!body.password) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Password is required",
+            }),
+          );
+        }
+
+        if (!body.role) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Role is required",
+            }),
+          );
+        }
+
+        if (usersRepository.usernameExists(body.username)) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Username already exists",
+            }),
+          );
+        }
+
+        const passwordHash = await bcrypt.hash(body.password, 10);
+
+        const result = usersRepository.create({
+          username: body.username,
+          passwordHash,
+          role: body.role,
+        });
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(
+          JSON.stringify({
+            success: true,
+            id: result.lastInsertRowid,
+          }),
+        );
+      }
+
+      // Password Reset
+      else if (
+        /^\/api\/users\/\d+\/password$/.test(req.url) &&
+        req.method === "PUT"
+      ) {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const id = req.url.split("/")[3];
+
+        const body = await dataController.parseBody(req);
+
+        if (!body.password) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Password is required",
+            }),
+          );
+        }
+
+        const passwordHash = await bcrypt.hash(body.password, 10);
+
+        usersRepository.updatePassword(id, passwordHash);
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(
+          JSON.stringify({
+            success: true,
+          }),
+        );
+      }
+
+      // Update User
+      else if (req.url.startsWith("/api/users/") && req.method === "PUT") {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const id = req.url.split("/").pop();
+
+        const body = await dataController.parseBody(req);
+
+        const existingUser = usersRepository.getById(id);
+
+        const activeAdminCount = usersRepository.getActiveAdminCount();
+
+        const removingLastAdmin =
+          existingUser.role === "admin" &&
+          existingUser.active === 1 &&
+          activeAdminCount === 1 &&
+          (body.role !== "admin" || body.active === 0);
+
+        if (removingLastAdmin) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Cannot remove or disable the last active administrator",
+            }),
+          );
+        }
+
+        usersRepository.updateUser(id, body.role, body.active);
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(
+          JSON.stringify({
+            success: true,
           }),
         );
       }

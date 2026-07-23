@@ -10,6 +10,8 @@
 
 import { io } from "socket.io-client";
 
+import userService from "../services/userService.js";
+
 import myAlert from "./alert";
 import myTable from "./table";
 import myForm from "./form";
@@ -28,6 +30,7 @@ const statusSelect = form.querySelector("#input--status");
 const strandedAtInput = form.querySelector("#input--stranded-at");
 const rescuedAtInput = form.querySelector("#input--rescued-at");
 const devTimeInput = document.getElementById("date-time--dev");
+const adminButton = document.getElementById("btn-users");
 
 let strandedTrains = [];
 
@@ -124,6 +127,42 @@ document.addEventListener("click", async (e) => {
       const data = myForm.getFormData();
 
       printHandler.printStrandedTrain(data);
+    } else if (button.classList.contains("btn-edit-user")) {
+      const user = await userService.getUserById(button.dataset.id);
+
+      document.getElementById("edit-user-id").value = user.id;
+
+      document.getElementById("edit-user-username").value = user.username;
+
+      document.getElementById("edit-user-role").value = user.role;
+
+      document.getElementById("edit-user-active").checked = !!user.active;
+
+      document
+        .getElementById("modalEditUserBackdrop")
+        .classList.remove("hidden");
+    } else if (button.id === "btn-reset-password") {
+      const id = document.getElementById("edit-user-id").value;
+
+      const password = document.getElementById("edit-user-password").value;
+
+      if (!password) {
+        myAlert.render("Please enter a password", "error", 3);
+
+        return;
+      }
+
+      const result = await userService.resetPassword(id, password);
+
+      if (!result.success) {
+        myAlert.render(result.error || "Password reset failed", "error", 3);
+
+        return;
+      }
+
+      document.getElementById("edit-user-password").value = "";
+
+      myAlert.render("Password reset successfully", "success", 3);
     } else if (button.classList.contains("btn-delete")) {
       const databaseId = button.dataset.index;
 
@@ -217,6 +256,74 @@ devTimeInput.addEventListener("change", async () => {
   refreshData();
 });
 
+// Click amin button
+adminButton.addEventListener("click", async (e) => {
+  const users = await userService.getUsers();
+
+  renderUsers(users);
+
+  document.getElementById("modalUsersBackdrop").classList.remove("hidden");
+});
+
+document
+  .getElementById("form-create-user")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const result = await userService.createUser({
+      username: document.getElementById("create-user-username").value,
+
+      password: document.getElementById("create-user-password").value,
+
+      role: document.getElementById("user-role").value,
+    });
+
+    if (!result.success) {
+      myAlert.render(result.error, "error", 3);
+
+      return;
+    }
+
+    myAlert.render("User created", "success", 2);
+
+    const users = await userService.getUsers();
+
+    renderUsers(users);
+
+    e.target.reset();
+  });
+
+document
+  .getElementById("form-edit-user")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById("edit-user-id").value;
+
+    const role = document.getElementById("edit-user-role").value;
+
+    const active = document.getElementById("edit-user-active").checked ? 1 : 0;
+
+    const result = await userService.updateUser(id, {
+      role,
+      active,
+    });
+
+    if (!result.success) {
+      myAlert.render("Failed to update user", "error", 3);
+
+      return;
+    }
+
+    myAlert.render("User updated", "success", 3);
+
+    const users = await userService.getUsers();
+
+    renderUsers(users);
+
+    document.getElementById("modalEditUserBackdrop").classList.add("hidden");
+  });
+
 // =========================
 // Functions
 // =========================
@@ -283,6 +390,35 @@ const addStrandedTrain = async (mode, data) => {
   }
 };
 
+const renderUsers = (users) => {
+  const tbody = document.getElementById("table-users-body");
+
+  tbody.innerHTML = "";
+
+  users.forEach((user) => {
+    tbody.insertAdjacentHTML(
+      "beforeend",
+      `
+      <tr>
+        <td>${user.username}</td>
+        <td>${user.role}</td>
+        <td>${user.active ? "Active" : "Disabled"}</td>
+
+        <td>
+          <button
+            class="btn btn-edit-user"
+            type="button"
+            data-id="${user.id}"
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+      `,
+    );
+  });
+};
+
 const setInputToNow = (input) => {
   const now = new Date();
 
@@ -332,7 +468,9 @@ const renderTable = () => {
 
 // Utility method to hide edit buttons for users who are not logged in
 const hideEditButtons = () => {
-  return document.getElementById("btn-add").classList.contains("hidden");
+  document.getElementById("btn-users").classList.contains("hidden");
+  document.getElementById("btn-add").classList.contains("hidden");
+  return;
 };
 
 const startSynchronizedUpdates = () => {

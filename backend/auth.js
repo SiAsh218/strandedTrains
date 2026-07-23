@@ -1,41 +1,7 @@
+const usersRepository = require("./database/usersRepository.js");
+
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-
-// =========================
-// USERS (replace with DB later)
-// =========================
-const USERS = [
-  {
-    username: "admin",
-    role: "admin",
-    passwordHash:
-      "$2b$10$JQMnKr/OIRiLssu4AeyeyennW4mUuFJ1ruLvqyLAkeKmCFcTNmvGG",
-  },
-  {
-    username: "gwruser1",
-    role: "gwr",
-    passwordHash:
-      "$2b$10$HCtcw4c9Vkbrry7KJC56MO4fwTAjFIlg2kfscyCRMq/ke6O.fvwUG",
-  },
-  {
-    username: "xcuser2",
-    role: "xc",
-    passwordHash:
-      "$2b$10$siVE54NarC2ChTFDs9hOXu1tCtb6.W.0kvMPv.BcrXYoBgovfi/du",
-  },
-  {
-    username: "gtsuser3",
-    role: "gts",
-    passwordHash:
-      "$2b$10$..yFPKcTfJdAvSx6MOkK0OH3e3nMzhjWRPDh8EvJJFUqJSpRfEImO",
-  },
-  {
-    username: "vieweruser",
-    role: "viewer",
-    passwordHash:
-      "$2b$10$yg9e.j81UA07myHOCjjb6eJ8PN6P1HxKsarE4rYeH4fhIdo3ZZtc2",
-  },
-];
 
 const SERVICE_USERS = {
   powerbi: {
@@ -96,11 +62,17 @@ const getUserFromRequest = (req) => {
 // AUTH: LOGIN
 // =========================
 const authenticate = async (username, password) => {
-  const user = USERS.find((u) => u.username === username);
-  if (!user) return null;
+  const user = usersRepository.getByUsername(username);
+
+  if (!user) {
+    return null;
+  }
 
   const valid = await bcrypt.compare(password, user.passwordHash);
-  if (!valid) return null;
+
+  if (!valid) {
+    return null;
+  }
 
   const sessionId = crypto.randomUUID();
 

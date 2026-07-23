@@ -21,9 +21,20 @@
           justify-content: space-between;
         "
       >
-        <button style="width: 80px; height: 40px" class="btn" id="btn-login">
-          Login
-        </button>
+        <div
+          style="
+            width: 180px;
+            height: 40px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <button style="width: 80px; height: 40px" class="btn" id="btn-login">
+            Login
+          </button>
+        </div>
 
         <input id="date-time--dev" class="hidden" type="datetime-local" />
 
@@ -31,11 +42,11 @@
 
         <div
           style="
-            width: 80px;
+            width: 180px;
             height: 40px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
           "
         >
@@ -45,6 +56,13 @@
             id="btn-add"
           >
             + New
+          </button>
+          <button
+            style="width: 80px; height: 40px"
+            class="btn {{if_isAdmin}} {{else}}hidden{{/if_isAdmin}}"
+            id="btn-users"
+          >
+            Admin
           </button>
         </div>
       </div>
@@ -185,13 +203,173 @@
         <form class="modal-form modal-form--login" id="loginForm">
           <div class="form-group">
             <label for="input--username">Username</label>
-            <input type="text" id="input--username" name="username" />
+            <input type="text" id="input--username" utocomplete="off" name="username" />
           </div>
           <div class="form-group">
             <label for="input--password">Password</label>
-            <input type="password" id="input--password" name="password" />
+            <input type="password" id="input--password" autocomplete="off" name="password" />
           </div>
           <button type="submit" class="btn">Login</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="modalUsersBackdrop" class="modal-backdrop hidden">
+      <div class="modal" style="max-width: 400px;">
+        <div class="modal-header">
+          <h2>User Management</h2>
+          <button class="modal-close" type="button">✕</button>
+        </div>
+          <form class="modal-form" autocomplete="off" id="form-create-user">
+            <h3>Existing Users</h3>
+
+            <table
+              id="table-users"
+              class="table--stranded-trains"
+              style="font-size: 0.9rem"
+            >
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Active</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="table-users-body"></tbody>
+            </table>
+
+            <h3>Create User</h3>
+
+            <div class="form-group-row">
+              <div class="form-group">
+                <label for="create-user-username">Username</label>
+                <input id="create-user-username" autocomplete="off" type="text" required />
+              </div>
+
+              <div class="form-group">
+                <label for="user-role">Role</label>
+                <select id="user-role">
+                  <option value="viewer">Viewer</option>
+                  <option value="gwr">GWR</option>
+                  <option value="xc">XC</option>
+                  <option value="gts">GTS</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group-row">
+              <div class="form-group">
+                <label for="create-user-password">Password</label>
+                <input id="create-user-password" type="password" autocomplete="off" required />
+              </div>
+
+              <div class="form-group"></div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn">Create User</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modalEditUserBackdrop"
+      class="modal-backdrop hidden"
+    >
+      <div
+        class="modal"
+        style="max-width: 500px"
+      >
+        <header class="modal-header">
+          <h2>Edit User</h2>
+
+          <button
+            class="modal-close"
+            type="button"
+          >
+            ✕
+          </button>
+        </header>
+
+        <form
+          class="modal-form"
+          id="form-edit-user"
+        >
+          <input
+            type="hidden"
+            id="edit-user-id"
+          />
+
+          <div class="form-group">
+            <label>Username</label>
+
+            <input
+              id="edit-user-username"
+              autocomplete="off"
+              disabled
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Role</label>
+
+            <select id="edit-user-role">
+              <option value="viewer">Viewer</option>
+              <option value="gwr">GWR</option>
+              <option value="xc">XC</option>
+              <option value="gts">GTS</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>
+              Active
+            </label>
+
+            <input
+              type="checkbox"
+              id="edit-user-active"
+            />
+          </div>
+
+          <h3>Password Reset</h3>
+
+          <div class="form-group">
+            <label for="edit-user-password">
+              New Password
+            </label>
+
+            <input
+              id="edit-user-password"
+              type="password"
+            />
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn"
+              id="btn-reset-password"
+            >
+              Reset Password
+            </button>
+          </div>
+
+
+          <div class="modal-footer">
+            <button
+              class="btn"
+              type="submit"
+            >
+              Save
+            </button>
+          </div>
         </form>
       </div>
     </div>

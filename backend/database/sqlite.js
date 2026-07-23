@@ -39,6 +39,10 @@ class SQLiteDatabase {
     console.log("Database initialised");
   }
 
+  prepare(sql) {
+    return this.db.prepare(sql);
+  }
+
   insert(table, data) {
     const columns = Object.keys(data);
     const placeholders = columns.map(() => "?").join(",");
