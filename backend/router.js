@@ -4,6 +4,8 @@
 
 const path = require("path");
 
+const socketManager = require("./socketManager");
+
 const viewController = require("./controllers/viewController.js");
 const dataController = require("./controllers/dataController.js");
 const templateEngine = require("./templateEngine.js");
@@ -153,6 +155,8 @@ class Router {
 
         const result = await dataController.create(body);
 
+        socketManager.getIo().emit("stranded-trains-updated");
+
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(
           JSON.stringify({
@@ -188,6 +192,8 @@ class Router {
         body.updatedByRole = req.user.role;
 
         const result = await dataController.update(id, body);
+
+        socketManager.getIo().emit("stranded-trains-updated");
 
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(

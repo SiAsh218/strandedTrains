@@ -7,6 +7,9 @@
 const config = require("../config.json");
 require("dotenv").config();
 
+const { Server } = require("socket.io");
+const socketManager = require("./socketManager");
+
 const http = require("http");
 const path = require("path");
 const url = require("url");
@@ -43,6 +46,18 @@ class App {
       } else {
         this.runHTTP("development");
       }
+
+      const io = new Server(this.server);
+
+      socketManager.initialise(io);
+
+      io.on("connection", (socket) => {
+        console.log(`Socket connected: ${socket.id}`);
+
+        socket.on("disconnect", () => {
+          console.log(`Socket disconnected: ${socket.id}`);
+        });
+      });
 
       this.server.listen(this.port, this.host, () => {
         console.log(
