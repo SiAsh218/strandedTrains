@@ -314,7 +314,7 @@ document
     });
 
     if (!result.success) {
-      myAlert.render("Failed to update user", "error", 3);
+      myAlert.render(result.error || "Failed to update user", "error", 3);
 
       return;
     }

@@ -411,11 +411,29 @@ class Router {
 
         const activeAdminCount = usersRepository.getActiveAdminCount();
 
+        const active = Number(body.active);
+
         const removingLastAdmin =
           existingUser.role === "admin" &&
           existingUser.active === 1 &&
           activeAdminCount === 1 &&
-          (body.role !== "admin" || body.active === 0);
+          (body.role !== "admin" || active === 0);
+
+        const disablingSelf =
+          existingUser.username === req.user.username && active === 0;
+
+        if (disablingSelf) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "You cannot disable your own account",
+            }),
+          );
+        }
 
         if (removingLastAdmin) {
           res.writeHead(400, {
@@ -430,7 +448,7 @@ class Router {
           );
         }
 
-        usersRepository.updateUser(id, body.role, body.active);
+        usersRepository.updateUser(id, body.role, active);
 
         res.writeHead(200, {
           "Content-Type": "application/json",
