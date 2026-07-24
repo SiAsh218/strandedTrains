@@ -9,7 +9,7 @@ require("dotenv").config();
 
 const { Server } = require("socket.io");
 const socketManager = require("./socketManager");
-const { seedAdminUser } = require("./database/seed.js");
+const { seedUsers } = require("./database/seed.js");
 
 const http = require("http");
 const path = require("path");
@@ -40,7 +40,7 @@ class App {
       // Initialise database FIRST
       await db.initialise(config.resetDatabase);
 
-      await seedAdminUser();
+      await seedUsers();
 
       // Start server
       if (process.env.NODE_ENV === "production") {

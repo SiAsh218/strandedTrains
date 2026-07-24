@@ -1,34 +1,66 @@
 const bcrypt = require("bcrypt");
 const db = require("./sqlite.js");
 
-const seedAdminUser = async () => {
-  const userCount = db.prepare("SELECT COUNT(*) as count FROM users").get();
+const seedUsers = async () => {
+  const users = [
+    {
+      username: "admin",
+      password: process.env.ADMIN_PASSWORD,
+      role: "admin",
+    },
+    {
+      username: "vieweruser",
+      password: process.env.VIEWER_PASSWORD,
+      role: "viewer",
+    },
+    {
+      username: "gwruser1",
+      password: process.env.GWR_PASSWORD,
+      role: "gwr",
+    },
+    {
+      username: "xcuser2",
+      password: process.env.XC_PASSWORD,
+      role: "xc",
+    },
+    {
+      username: "gtsuser3",
+      password: process.env.GTS_PASSWORD,
+      role: "gts",
+    },
+  ];
 
-  if (userCount.count > 0) {
-    return;
+  for (const user of users) {
+    const existingUser = db
+      .prepare("SELECT id FROM users WHERE username = ?")
+      .get(user.username);
+
+    if (existingUser) {
+      continue;
+    }
+
+    if (!user.password) {
+      throw new Error(`Password not provided for ${user.username}`);
+    }
+
+    const passwordHash = await bcrypt.hash(user.password, 10);
+
+    db.prepare(
+      `
+      INSERT INTO users
+      (
+        username,
+        passwordHash,
+        role
+      )
+      VALUES (?, ?, ?)
+    `,
+    ).run(user.username, passwordHash, user.role);
+
+    console.log(`Created user: ${user.username}`);
   }
-
-  if (!process.env.ADMIN_PASSWORD) {
-    throw new Error("ADMIN_PASSWORD environment variable is not set");
-  }
-
-  const passwordHash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
-
-  db.prepare(
-    `
-    INSERT INTO users
-    (
-      username,
-      passwordHash,
-      role
-    )
-    VALUES (?, ?, ?)
-  `,
-  ).run("admin", passwordHash, "admin");
-
-  console.log("Default admin user created");
 };
 
 module.exports = {
-  seedAdminUser,
+  seedUsers,
 };
