@@ -121,6 +121,13 @@ class Router {
           data.contactNo = "";
           data.responderNo = "";
           data.championNo = "";
+        } else if (
+          req.user.role !== "admin" &&
+          data.createdByRole !== req.user.role
+        ) {
+          data.contactNo = "";
+          data.responderNo = "";
+          data.championNo = "";
         }
 
         res.writeHead(200, { "Content-Type": "application/json" });
