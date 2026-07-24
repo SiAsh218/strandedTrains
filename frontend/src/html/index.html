@@ -50,19 +50,19 @@
             align-items: center;
           "
         >
+           <button
+            style="width: 80px; height: 40px"
+            class="btn {{if_isAdmin}} {{else}}hidden{{/if_isAdmin}}"
+            id="btn-users"
+          >
+            Admin
+          </button>
           <button
             style="width: 80px; height: 40px"
             class="btn {{if_isLoggedIn}} {{else}}hidden{{/if_isLoggedIn}}"
             id="btn-add"
           >
             + New
-          </button>
-          <button
-            style="width: 80px; height: 40px"
-            class="btn {{if_isAdmin}} {{else}}hidden{{/if_isAdmin}}"
-            id="btn-users"
-          >
-            Admin
           </button>
         </div>
       </div>
