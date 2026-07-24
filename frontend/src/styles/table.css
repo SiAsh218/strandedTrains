@@ -61,6 +61,8 @@ table tr:last-child td {
   color: #16a34a;
 }
 
+/*
+
 @keyframes flash-red {
   0% {
     background-color: inherit;
@@ -84,7 +86,7 @@ table tr:last-child td {
   }
   50% {
     background-color: #ffbf00;
-  } /* Standard Amber Hex Code */
+  } Standard Amber Hex Code
   100% {
     background-color: inherit;
   }
@@ -92,5 +94,41 @@ table tr:last-child td {
 
 .flashing-amber {
   animation: flash-amber 1s infinite;
+  font-weight: bold;
+}
+
+*/
+
+@keyframes pulse-red {
+  0% {
+    background-color: rgba(255, 0, 0, 0.15);
+  }
+  50% {
+    background-color: rgba(255, 0, 0, 0.35);
+  }
+  100% {
+    background-color: rgba(255, 0, 0, 0.15);
+  }
+}
+
+.flashing-red {
+  animation: pulse-red 2.5s ease-in-out infinite;
+  font-weight: bold;
+}
+
+@keyframes pulse-amber {
+  0% {
+    background-color: rgba(255, 191, 0, 0.15);
+  }
+  50% {
+    background-color: rgba(255, 191, 0, 0.35);
+  }
+  100% {
+    background-color: rgba(255, 191, 0, 0.15);
+  }
+}
+
+.flashing-amber {
+  animation: pulse-amber 2.5s ease-in-out infinite;
   font-weight: bold;
 }
