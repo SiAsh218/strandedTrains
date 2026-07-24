@@ -60,7 +60,7 @@ const create = ({ username, passwordHash, role }) => {
 };
 
 const updatePassword = (id, passwordHash) => {
-  console.log("Updating password", id);
+  // console.log("Updating password", id);
 
   return db
     .prepare(

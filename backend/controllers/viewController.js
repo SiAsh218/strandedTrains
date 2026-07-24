@@ -23,7 +23,7 @@ class ViewController {
     try {
       if (template == null) throw new Error("HTML template is blank");
 
-      console.log(data);
+      // console.log(data);
 
       const html = await templateEngine.getFinalHTML(template, {
         strandedTrains: data.strandedTrains,
