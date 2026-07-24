@@ -36,3 +36,21 @@ export const getCurrentUser = async () => {
     };
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error during logout:", error);
+
+    return {
+      success: false,
+      error: "Logout failed due to network error",
+    };
+  }
+};

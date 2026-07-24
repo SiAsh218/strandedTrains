@@ -29,6 +29,7 @@ class ViewController {
         strandedTrains: data.strandedTrains,
         isLoggedIn: data.isLoggedIn,
         isAdmin: data.isAdmin,
+        showLogin: data.showLogin,
       });
 
       res.writeHead(200, { "Content-Type": "text/html" });

@@ -41,6 +41,7 @@ class Router {
           strandedTrains,
           isLoggedIn: isLoggedIn && req.user?.role !== "viewer",
           isAdmin: req.user?.role === "admin",
+          showLogin: !isLoggedIn,
         });
 
         return;

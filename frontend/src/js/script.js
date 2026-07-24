@@ -17,7 +17,7 @@ import myTable from "./table";
 import myForm from "./form";
 import printHandler from "./printHandler";
 
-import { login, getCurrentUser } from "../services/authService.js";
+import { login, getCurrentUser, logout } from "../services/authService.js";
 import strandedTrainsService from "../services/strandedTrainsService.js";
 import tyrellClipboardService from "../services/tyrellClipboardService.js";
 
@@ -117,6 +117,16 @@ document.addEventListener("click", async (e) => {
       openModal();
     } else if (button.id === "btn-login") {
       document.getElementById("modalLoginBackdrop").classList.remove("hidden");
+    } else if (button.id === "btn-logout") {
+      const result = await logout();
+
+      if (result.success) {
+        document.getElementById("btn-add").classList.add("hidden");
+        document.getElementById("btn-users").classList.add("hidden");
+        window.location.href = "/";
+      } else {
+        myAlert.render("Logout Failed", "error", 3);
+      }
     } else if (button.id === "btn-copy-to-clipboard") {
       await tyrellClipboardService.copyToClipboard(myForm.getFormData());
     } else if (button.id === "btn-print-stranded-train") {
