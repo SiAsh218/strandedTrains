@@ -14,6 +14,48 @@ const db = require("../database/database.js");
 // =========================
 const TABLE = "stranded_trains";
 
+const SAFE_COLUMNS = `
+  id,
+  priority,
+  headcode,
+  location,
+  locationW3W,
+  traction,
+  strandedAt,
+  contact,
+  responder,
+  ccilRef,
+  status,
+  moodOnboard,
+  rescuedAt,
+  passengerLoading,
+  passengerCount,
+  toiletsWorking,
+  noOfStaff,
+  vulnerablePeople,
+  tolo,
+  heatingRequired,
+  airCoolingRequired,
+  lighting,
+  paWorking,
+  cateringAvailable,
+  strandedTrainChampion,
+  otherAffectedTrains,
+  planA,
+  planB,
+  planC,
+  additionalInformation,
+  lastContact,
+  lastContactPerson,
+  contactRecord,
+  updatedByRole,
+  createdByRole,
+  showDeletionFlag,
+  lastUpdated,
+  createdAt,
+  deleted
+`;
+
 class StrandedTrainModel {
   async create(data) {
     return db.insert(TABLE, this.normaliseData(data));
@@ -32,52 +74,7 @@ class StrandedTrainModel {
   }
 
   async getActiveWithoutPhoneNumbers() {
-    return await db.getWhereSelect(
-      TABLE,
-      `
-      id,
-      priority,
-      headcode,
-      location,
-      locationW3W,
-      traction,
-      strandedAt,
-      contact,
-      responder,
-      ccilRef,
-      status,
-      moodOnboard,
-      rescuedAt,
-      passengerLoading,
-      passengerCount,
-      toiletsWorking,
-      noOfStaff,
-      vulnerablePeople,
-      tolo,
-      heatingRequired,
-      airCoolingRequired,
-      lighting,
-      paWorking,
-      cateringAvailable,
-      strandedTrainChampion,
-      otherAffectedTrains,
-      planA,
-      planB,
-      planC,
-      additionalInformation,
-      lastContact,
-      lastContactPerson,
-      contactRecord,
-      updatedByRole,
-      createdByRole,
-      showDeletionFlag,
-      lastUpdated,
-      createdAt,
-      deleted
-    `,
-      "deleted = ?",
-      [0],
-    );
+    return await db.getWhereSelect(TABLE, SAFE_COLUMNS, "deleted = ?", [0]);
   }
 
   async getByCreatedDate(from, to) {
@@ -98,101 +95,19 @@ class StrandedTrainModel {
     return db
       .prepare(
         `
-    SELECT
-      id,
-      priority,
-      headcode,
-      location,
-      locationW3W,
-      traction,
-      strandedAt,
-      contact,
-      responder,
-      ccilRef,
-      status,
-      moodOnboard,
-      rescuedAt,
-      passengerLoading,
-      passengerCount,
-      toiletsWorking,
-      noOfStaff,
-      vulnerablePeople,
-      tolo,
-      heatingRequired,
-      airCoolingRequired,
-      lighting,
-      paWorking,
-      cateringAvailable,
-      strandedTrainChampion,
-      otherAffectedTrains,
-      planA,
-      planB,
-      planC,
-      additionalInformation,
-      lastContact,
-      lastContactPerson,
-      contactRecord,
-      updatedByRole,
-      createdByRole,
-      showDeletionFlag,
-      lastUpdated,
-      createdAt,
-      deleted
-    FROM stranded_trains
-    WHERE createdAt >= ?
-      AND createdAt <= ?
-      AND deleted = 0
-  `,
+      SELECT
+        ${SAFE_COLUMNS}
+      FROM stranded_trains
+      WHERE createdAt >= ?
+        AND createdAt <= ?
+        AND deleted = 0
+      `,
       )
       .all(from, to);
   }
 
   async getAllWithoutPhoneNumbers() {
-    return await db.getWhereSelect(
-      TABLE,
-      `
-      id,
-      priority,
-      headcode,
-      location,
-      locationW3W,
-      traction,
-      strandedAt,
-      contact,
-      responder,
-      ccilRef,
-      status,
-      moodOnboard,
-      rescuedAt,
-      passengerLoading,
-      passengerCount,
-      toiletsWorking,
-      noOfStaff,
-      vulnerablePeople,
-      tolo,
-      heatingRequired,
-      airCoolingRequired,
-      lighting,
-      paWorking,
-      cateringAvailable,
-      strandedTrainChampion,
-      otherAffectedTrains,
-      planA,
-      planB,
-      planC,
-      additionalInformation,
-      lastContact,
-      lastContactPerson,
-      contactRecord,
-      updatedByRole,
-      createdByRole,
-      showDeletionFlag,
-      lastUpdated,
-      createdAt,
-      deleted
-    `,
-      "1 = 1",
-    );
+    return await db.getWhereSelect(TABLE, SAFE_COLUMNS, "1 = 1");
   }
 
   async getById(id) {

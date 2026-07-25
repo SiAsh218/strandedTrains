@@ -26,9 +26,7 @@ class App {
 
     // Handle uncaught exceptions
     process.on("unhandledRejection", (reason, p) => {
-      console.error("Unhandled Rejection at:", p, "reason:", reason);
-
-      process.exit(1);
+      console.error(reason);
     });
   }
 
@@ -147,7 +145,15 @@ class App {
    * @returns
    */
   _getPath(url) {
-    return path.join(__dirname, this.staticFilePath, url);
+    const frontendRoot = path.resolve(__dirname, this.staticFilePath);
+
+    const requestedPath = path.resolve(frontendRoot, "." + url);
+
+    if (!requestedPath.startsWith(frontendRoot)) {
+      return null;
+    }
+
+    return requestedPath;
   }
 
   /**
@@ -209,8 +215,12 @@ class App {
   _readFileUtf8(filepath) {
     return new Promise((resolve, reject) => {
       fs.readFile(filepath, "utf8", (error, data) => {
-        if (data) resolve(data);
-        else reject({ message: `could not read file at path: ${filepath}` });
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        resolve(data);
       });
     });
   }
