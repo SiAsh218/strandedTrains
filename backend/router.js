@@ -135,13 +135,21 @@ class Router {
       ) {
         if (!auth.requirePermission("read")(req, res)) return;
 
-        const data = await dataController.getAll();
+        const url = new URL(req.url, `http://${req.headers.host}`);
 
-        data.forEach((d) => {
-          d.contactNo = null;
-          d.responderNo = null;
-          d.championNo = null;
-        });
+        const from = url.searchParams.get("from");
+        const to = url.searchParams.get("to");
+
+        let data;
+
+        if (from && to) {
+          data = await dataController.getByCreatedDateWithoutPhoneNumbers(
+            from,
+            to,
+          );
+        } else {
+          data = await dataController.getAllWithoutPhoneNumbers();
+        }
 
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(data));

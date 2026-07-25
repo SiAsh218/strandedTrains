@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS stranded_trains (
 
   showDeletionFlag INTEGER,
   lastUpdated TEXT,
+  createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
   deleted INTEGER DEFAULT 0
 );
 

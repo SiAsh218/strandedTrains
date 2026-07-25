@@ -72,11 +72,79 @@ class StrandedTrainModel {
       createdByRole,
       showDeletionFlag,
       lastUpdated,
+      createdAt,
       deleted
     `,
       "deleted = ?",
       [0],
     );
+  }
+
+  async getByCreatedDate(from, to) {
+    return db
+      .prepare(
+        `
+    SELECT *
+    FROM stranded_trains
+    WHERE createdAt >= ?
+      AND createdAt <= ?
+      AND deleted = 0
+  `,
+      )
+      .all(from, to);
+  }
+
+  async getByCreatedDateWithoutPhoneNumbers(from, to) {
+    return db
+      .prepare(
+        `
+    SELECT
+      id,
+      priority,
+      headcode,
+      location,
+      locationW3W,
+      traction,
+      strandedAt,
+      contact,
+      responder,
+      ccilRef,
+      status,
+      moodOnboard,
+      rescuedAt,
+      passengerLoading,
+      passengerCount,
+      toiletsWorking,
+      noOfStaff,
+      vulnerablePeople,
+      tolo,
+      heatingRequired,
+      airCoolingRequired,
+      lighting,
+      paWorking,
+      cateringAvailable,
+      strandedTrainChampion,
+      otherAffectedTrains,
+      planA,
+      planB,
+      planC,
+      additionalInformation,
+      lastContact,
+      lastContactPerson,
+      contactRecord,
+      updatedByRole,
+      createdByRole,
+      showDeletionFlag,
+      lastUpdated,
+      createdAt,
+      deleted
+    FROM stranded_trains
+    WHERE createdAt >= ?
+      AND createdAt <= ?
+      AND deleted = 0
+  `,
+      )
+      .all(from, to);
   }
 
   async getAllWithoutPhoneNumbers() {
@@ -120,6 +188,7 @@ class StrandedTrainModel {
       createdByRole,
       showDeletionFlag,
       lastUpdated,
+      createdAt,
       deleted
     `,
       "1 = 1",
