@@ -34,6 +34,16 @@ class Database {
     return sqlite.getWhere(table, whereClause, values);
   }
 
+  async getWhereSelect(table, columns, whereClause, values = []) {
+    const sql = `
+    SELECT ${columns}
+    FROM ${table}
+    WHERE ${whereClause}
+  `;
+
+    return this.db.prepare(sql).all(values);
+  }
+
   async getById(table, id) {
     return this.db.getById(table, id);
   }

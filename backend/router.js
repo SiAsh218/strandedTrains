@@ -83,15 +83,7 @@ class Router {
       else if (req.url === "/api/stranded-trains" && req.method === "GET") {
         if (!auth.requirePermission("read")(req, res)) return;
 
-        const data = await dataController.getActive();
-
-        if (req.user.role === "viewer") {
-          for (const item of data) {
-            item.contactNo = "";
-            item.responderNo = "";
-            item.championNo = "";
-          }
-        }
+        const data = await dataController.getActiveWithoutPhoneNumbers();
 
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(data));
@@ -101,7 +93,7 @@ class Router {
       else if (req.url === "/api/all-stranded-trains" && req.method === "GET") {
         if (!auth.requirePermission("read")(req, res)) return;
 
-        const data = await dataController.getAll();
+        const data = await dataController.getAllWithoutPhoneNumbers();
 
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(JSON.stringify(data));

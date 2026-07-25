@@ -31,6 +31,101 @@ class StrandedTrainModel {
     return await db.getWhere(TABLE, "deleted = ?", [0]);
   }
 
+  async getActiveWithoutPhoneNumbers() {
+    return await db.getWhereSelect(
+      TABLE,
+      `
+      id,
+      priority,
+      headcode,
+      location,
+      locationW3W,
+      traction,
+      strandedAt,
+      contact,
+      responder,
+      ccilRef,
+      status,
+      moodOnboard,
+      rescuedAt,
+      passengerLoading,
+      passengerCount,
+      toiletsWorking,
+      noOfStaff,
+      vulnerablePeople,
+      tolo,
+      heatingRequired,
+      airCoolingRequired,
+      lighting,
+      paWorking,
+      cateringAvailable,
+      strandedTrainChampion,
+      otherAffectedTrains,
+      planA,
+      planB,
+      planC,
+      additionalInformation,
+      lastContact,
+      lastContactPerson,
+      contactRecord,
+      updatedByRole,
+      createdByRole,
+      showDeletionFlag,
+      lastUpdated,
+      deleted
+    `,
+      "deleted = ?",
+      [0],
+    );
+  }
+
+  async getAllWithoutPhoneNumbers() {
+    return await db.getWhereSelect(
+      TABLE,
+      `
+      id,
+      priority,
+      headcode,
+      location,
+      locationW3W,
+      traction,
+      strandedAt,
+      contact,
+      responder,
+      ccilRef,
+      status,
+      moodOnboard,
+      rescuedAt,
+      passengerLoading,
+      passengerCount,
+      toiletsWorking,
+      noOfStaff,
+      vulnerablePeople,
+      tolo,
+      heatingRequired,
+      airCoolingRequired,
+      lighting,
+      paWorking,
+      cateringAvailable,
+      strandedTrainChampion,
+      otherAffectedTrains,
+      planA,
+      planB,
+      planC,
+      additionalInformation,
+      lastContact,
+      lastContactPerson,
+      contactRecord,
+      updatedByRole,
+      createdByRole,
+      showDeletionFlag,
+      lastUpdated,
+      deleted
+    `,
+      "1 = 1",
+    );
+  }
+
   async getById(id) {
     return await db.getById(TABLE, id);
   }

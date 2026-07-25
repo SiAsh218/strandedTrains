@@ -18,6 +18,16 @@ class DataController {
     return await strandedTrainModel.getAll();
   }
 
+  // GET ACTIVE WITHOUT PHONE NUMBERS
+  async getAllWithoutPhoneNumbers() {
+    return await strandedTrainModel.getAllWithoutPhoneNumbers();
+  }
+
+  // GET ACTIVE WITHOUT PHONE NUMBERS
+  async getActiveWithoutPhoneNumbers() {
+    return await strandedTrainModel.getActiveWithoutPhoneNumbers();
+  }
+
   // =========================
   // GET ACTIVE - only returns stranded trains that are currently stranded (i.e. not rescued)
   // =========================
