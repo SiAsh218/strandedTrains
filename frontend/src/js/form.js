@@ -192,6 +192,8 @@ class Form {
       .forEach((el) => (el.readOnly = true));
 
     form.querySelectorAll("select").forEach((el) => (el.disabled = true));
+
+    form.querySelector('button[type="submit"]')?.classList.add("hidden");
   }
 
   enableForm(form) {
@@ -200,6 +202,8 @@ class Form {
       .forEach((el) => (el.readOnly = false));
 
     form.querySelectorAll("select").forEach((el) => (el.disabled = false));
+
+    form.querySelector('button[type="submit"]')?.classList.remove("hidden");
   }
 
   getInputValuebyId(id) {

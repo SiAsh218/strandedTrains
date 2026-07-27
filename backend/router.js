@@ -109,6 +109,8 @@ class Router {
         const id = req.url.split("/").pop();
         const data = await dataController.getById(id);
 
+        const canEdit = auth.canEditRecord(req.user, data);
+
         if (req.user.role === "viewer") {
           data.contactNo = "";
           data.responderNo = "";
@@ -123,7 +125,7 @@ class Router {
         }
 
         res.writeHead(200, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify(data));
+        return res.end(JSON.stringify({ ...data, canEdit }));
       }
 
       // =========================
