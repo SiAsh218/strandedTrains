@@ -78,32 +78,20 @@ class StrandedTrainModel {
   }
 
   async getByCreatedDate(from, to) {
-    return db
-      .prepare(
-        `
-    SELECT *
-    FROM stranded_trains
-    WHERE createdAt >= ?
-      AND createdAt <= ?
-      AND deleted = 0
-  `,
-      )
-      .all(from, to);
+    return await db.getWhere(
+      TABLE,
+      "createdAt >= ? AND createdAt <= ? AND deleted = ?",
+      [from, to, 0],
+    );
   }
 
   async getByCreatedDateWithoutPhoneNumbers(from, to) {
-    return db
-      .prepare(
-        `
-      SELECT
-        ${SAFE_COLUMNS}
-      FROM stranded_trains
-      WHERE createdAt >= ?
-        AND createdAt <= ?
-        AND deleted = 0
-      `,
-      )
-      .all(from, to);
+    return await db.getWhereSelect(
+      TABLE,
+      SAFE_COLUMNS,
+      "createdAt >= ? AND createdAt <= ? AND deleted = ?",
+      [from, to, 0],
+    );
   }
 
   async getAllWithoutPhoneNumbers() {

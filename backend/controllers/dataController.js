@@ -39,6 +39,13 @@ class DataController {
     return await strandedTrainModel.getByCreatedDate(from, to);
   }
 
+  async getByCreatedDateWithoutPhoneNumbers(from, to) {
+    return await strandedTrainModel.getByCreatedDateWithoutPhoneNumbers(
+      from,
+      to,
+    );
+  }
+
   // =========================
   // GET BY ID
   // =========================

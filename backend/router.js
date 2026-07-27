@@ -130,12 +130,14 @@ class Router {
       // POWER BI REPORTING ROUTE
       // =========================
       else if (
-        req.url === "/api/reporting/stranded-trains" &&
+        req.url.startsWith("/api/reporting/stranded-trains") &&
         req.method === "GET"
       ) {
         if (!auth.requirePermission("read")(req, res)) return;
 
         const url = new URL(req.url, `http://${req.headers.host}`);
+
+        // Example query string ?from=2026-07-25&to=2026-12-31
 
         const from = url.searchParams.get("from");
         const to = url.searchParams.get("to");
