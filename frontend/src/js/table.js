@@ -104,25 +104,6 @@ class Table {
         }
       }
 
-      // const lastContactFormatted = this.formatDateTime(row.lastContact);
-      // const lastContactDuration = !this.isDevMode()
-      //   ? this.timeDiff(lastContactFormatted)
-      //   : this.timeDiff(
-      //       lastContactFormatted,
-      //       this.formatDateTime(this.getDevTime()),
-      //     );
-      // const lastContactMinutes = this.durationToMinutes(lastContactDuration);
-
-      // const lastContactRag =
-      //   row.status === "Resolved"
-      //     ? ""
-      //     : lastContactMinutes >= 30
-      //       ? "flashing-red"
-      //       : lastContactMinutes >= 20
-      //         ? "flashing-amber"
-      //         : "";
-      // TODO: to here
-
       const durationMinutes = this.durationToMinutes(duration);
       if (durationMinutes >= 60) {
         durationRag = "td--red-bold";
