@@ -34,9 +34,9 @@ const initUserAdmin = () => {
   const adminButton = document.getElementById("btn-users");
 
   adminButton.addEventListener("click", async (e) => {
-    const users = await userService.getUsers();
+    refreshUsersTable();
 
-    renderUsers(users);
+    clearUserSearch();
 
     document.getElementById("create-user-username").value = "";
     document.getElementById("create-user-password").value = "";
@@ -61,8 +61,7 @@ const initUserAdmin = () => {
 
       myAlert.render("User created", "success", 2);
 
-      const users = await userService.getUsers();
-      renderUsers(users);
+      refreshUsersTable();
 
       e.target.reset();
     });
@@ -90,11 +89,14 @@ const initUserAdmin = () => {
 
       myAlert.render("User updated", "success", 3);
 
-      const users = await userService.getUsers();
-      renderUsers(users);
+      refreshUsersTable();
 
       document.getElementById("modalEditUserBackdrop").classList.add("hidden");
     });
+
+  const searchInput = document.getElementById("input-user-search");
+
+  searchInput.addEventListener("input", filterUsersTable);
 };
 
 const handleEditUser = async (button) => {
@@ -128,6 +130,41 @@ const handleResetPassword = async () => {
   document.getElementById("edit-user-password").value = "";
 
   myAlert.render("Password reset successfully", "success", 3);
+};
+
+const filterUsersTable = () => {
+  const search = document
+    .getElementById("input-user-search")
+    .value.toLowerCase()
+    .trim();
+
+  const rows = document.querySelectorAll("#table-users-body tr");
+
+  rows.forEach((row) => {
+    const username = row.cells[0]?.textContent.toLowerCase() || "";
+
+    const role = row.cells[1]?.textContent.toLowerCase() || "";
+
+    const matches = username.includes(search) || role.includes(search);
+
+    row.style.display = matches ? "" : "none";
+  });
+};
+
+const refreshUsersTable = async () => {
+  const users = await userService.getUsers();
+
+  renderUsers(users);
+
+  filterUsersTable();
+};
+
+const clearUserSearch = () => {
+  const searchInput = document.getElementById("input-user-search");
+
+  searchInput.value = "";
+
+  filterUsersTable();
 };
 
 export { initUserAdmin, handleEditUser, handleResetPassword };
