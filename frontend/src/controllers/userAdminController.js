@@ -28,6 +28,8 @@ const handleOpenUserAdmin = async () => {
   document.getElementById("create-user-password").value = "";
 
   document.getElementById("modalUsersBackdrop").classList.remove("hidden");
+
+  document.getElementById("input-user-search").focus();
 };
 
 const handleCreateUser = async (e) => {

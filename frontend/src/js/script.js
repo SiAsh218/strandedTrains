@@ -119,6 +119,7 @@ document.addEventListener("click", async (e) => {
       myForm.enableForm(form);
       setInputToNow(strandedAtInput);
       openModal();
+      document.getElementById("input--headcode").focus();
     } else if (button.id === "btn-login") {
       document.getElementById("modalLoginBackdrop").classList.remove("hidden");
     } else if (button.id === "btn-logout") {
