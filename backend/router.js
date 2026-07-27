@@ -196,7 +196,7 @@ class Router {
           return res.end(
             JSON.stringify({
               success: false,
-              error: `Entry was created by user '${existing.createdByRole}' you don't have permission to edit this entry`,
+              error: `Entry was created by user with role '${existing.createdByRole}' you don't have permission to edit this entry`,
             }),
           );
         }
