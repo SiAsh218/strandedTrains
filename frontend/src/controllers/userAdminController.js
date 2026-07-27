@@ -1,6 +1,82 @@
 import userService from "../services/userService.js";
 import myAlert from "../js/alert.js";
 
+const initUserAdmin = () => {
+  document
+    .getElementById("btn-users")
+    .addEventListener("click", handleOpenUserAdmin);
+
+  document
+    .getElementById("form-create-user")
+    .addEventListener("submit", handleCreateUser);
+
+  document
+    .getElementById("form-edit-user")
+    .addEventListener("submit", handleUpdateUser);
+
+  document
+    .getElementById("input-user-search")
+    .addEventListener("input", filterUsersTable);
+};
+
+const handleOpenUserAdmin = async () => {
+  await refreshUsersTable();
+
+  clearUserSearch();
+
+  document.getElementById("create-user-username").value = "";
+  document.getElementById("create-user-password").value = "";
+
+  document.getElementById("modalUsersBackdrop").classList.remove("hidden");
+};
+
+const handleCreateUser = async (e) => {
+  e.preventDefault();
+
+  const result = await userService.createUser({
+    username: document.getElementById("create-user-username").value,
+    password: document.getElementById("create-user-password").value,
+    role: document.getElementById("user-role").value,
+  });
+
+  if (!result.success) {
+    myAlert.render(result.error, "error", 3);
+    return;
+  }
+
+  myAlert.render("User created", "success", 2);
+
+  await refreshUsersTable();
+
+  e.target.reset();
+};
+
+const handleUpdateUser = async (e) => {
+  e.preventDefault();
+
+  const id = document.getElementById("edit-user-id").value;
+
+  const role = document.getElementById("edit-user-role").value;
+
+  const active = document.getElementById("edit-user-active").checked ? 1 : 0;
+
+  const result = await userService.updateUser(id, {
+    role,
+    active,
+  });
+
+  if (!result.success) {
+    myAlert.render(result.error || "Failed to update user", "error", 3);
+    return;
+  }
+
+  myAlert.render("User updated", "success", 3);
+
+  await refreshUsersTable();
+
+  document.getElementById("modalEditUserBackdrop").classList.add("hidden");
+};
+
 const renderUsers = (users) => {
   const tbody = document.getElementById("table-users-body");
 
@@ -14,7 +90,6 @@ const renderUsers = (users) => {
         <td>${user.username}</td>
         <td>${user.role}</td>
         <td>${user.active ? "Active" : "Disabled"}</td>
-
         <td>
           <button
             class="btn btn-edit-user"
@@ -28,75 +103,6 @@ const renderUsers = (users) => {
       `,
     );
   });
-};
-
-const initUserAdmin = () => {
-  const adminButton = document.getElementById("btn-users");
-
-  adminButton.addEventListener("click", async (e) => {
-    refreshUsersTable();
-
-    clearUserSearch();
-
-    document.getElementById("create-user-username").value = "";
-    document.getElementById("create-user-password").value = "";
-    document.getElementById("modalUsersBackdrop").classList.remove("hidden");
-  });
-
-  document
-    .getElementById("form-create-user")
-    .addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const result = await userService.createUser({
-        username: document.getElementById("create-user-username").value,
-        password: document.getElementById("create-user-password").value,
-        role: document.getElementById("user-role").value,
-      });
-
-      if (!result.success) {
-        myAlert.render(result.error, "error", 3);
-        return;
-      }
-
-      myAlert.render("User created", "success", 2);
-
-      refreshUsersTable();
-
-      e.target.reset();
-    });
-
-  document
-    .getElementById("form-edit-user")
-    .addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const id = document.getElementById("edit-user-id").value;
-      const role = document.getElementById("edit-user-role").value;
-      const active = document.getElementById("edit-user-active").checked
-        ? 1
-        : 0;
-
-      const result = await userService.updateUser(id, {
-        role,
-        active,
-      });
-
-      if (!result.success) {
-        myAlert.render(result.error || "Failed to update user", "error", 3);
-        return;
-      }
-
-      myAlert.render("User updated", "success", 3);
-
-      refreshUsersTable();
-
-      document.getElementById("modalEditUserBackdrop").classList.add("hidden");
-    });
-
-  const searchInput = document.getElementById("input-user-search");
-
-  searchInput.addEventListener("input", filterUsersTable);
 };
 
 const handleEditUser = async (button) => {
@@ -141,9 +147,9 @@ const filterUsersTable = () => {
   const rows = document.querySelectorAll("#table-users-body tr");
 
   rows.forEach((row) => {
-    const username = row.cells[0]?.textContent.toLowerCase() || "";
+    const username = row.cells[0]?.textContent.toLowerCase() ?? "";
 
-    const role = row.cells[1]?.textContent.toLowerCase() || "";
+    const role = row.cells[1]?.textContent.toLowerCase() ?? "";
 
     const matches = username.includes(search) || role.includes(search);
 
@@ -161,6 +167,8 @@ const refreshUsersTable = async () => {
 
 const clearUserSearch = () => {
   const searchInput = document.getElementById("input-user-search");
+
+  if (!searchInput) return;
 
   searchInput.value = "";
 
