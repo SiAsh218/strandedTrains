@@ -63,9 +63,11 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  await addStrandedTrain(formMode, data);
+  const success = await addStrandedTrain(formMode, data);
 
-  closeModal();
+  if (success) {
+    closeModal();
+  }
 });
 
 // =========================
@@ -152,6 +154,8 @@ document.addEventListener("click", async (e) => {
       printHandler.printStrandedTrain(data);
     } else if (button.classList.contains("btn-edit-user")) {
       await handleEditUser(button);
+    } else if (button.id === "btn-refresh-record") {
+      await refreshCurrentRecord();
     } else if (button.id === "btn-reset-password") {
       await handleResetPassword();
     } else if (button.classList.contains("btn-delete")) {
@@ -177,6 +181,8 @@ document.addEventListener("click", async (e) => {
 
             return;
           }
+
+          myAlert.render("Stranded train deleted successfully", "success", 3);
 
           await refreshData();
         } catch (error) {
@@ -276,6 +282,8 @@ const openModal = () => {
     document.querySelector(".modal-footer").classList.remove("hidden");
   }
 
+  document.getElementById("btn-refresh-record").classList.add("hidden");
+
   document.getElementById("modalBackdrop").classList.remove("hidden");
   form.scrollTop = 0;
 };
@@ -305,14 +313,24 @@ const addStrandedTrain = async (mode, data) => {
     if (!result.success) {
       myAlert.render(result.result.error || "Failed to save entry", "error", 3);
 
-      return;
+      return false;
+    }
+
+    if (mode === "new") {
+      myAlert.render("Stranded train created successfully", "success", 3);
+    } else {
+      myAlert.render("Stranded train updated successfully", "success", 3);
     }
 
     await refreshData();
+
+    return true;
   } catch (error) {
     console.error("Error adding/updating stranded train:", error);
 
     myAlert.render("Failed to save stranded train data", "error", 3);
+
+    return false;
   }
 };
 
@@ -368,6 +386,23 @@ const hideEditButtons = () => {
   return document.getElementById("btn-users").classList.contains("hidden");
 };
 
+const isTrainModalOpen = () => {
+  return !document.getElementById("modalBackdrop").classList.contains("hidden");
+};
+
+const refreshCurrentRecord = async () => {
+  const id = form.dataset.databaseId;
+  if (!id) return;
+
+  const response = await strandedTrainsService.getStrandedTrainById(id);
+
+  if (!response.data) return;
+
+  myForm.setFormData(form, response.data);
+  document.getElementById("btn-refresh-record").classList.add("hidden");
+  myAlert.render("Record refreshed", "success", 3);
+};
+
 const startSynchronizedUpdates = () => {
   const now = new Date();
 
@@ -393,8 +428,19 @@ socket.on("connect", () => {
   // console.log("Socket connected");
 });
 
-socket.on("stranded-trains-updated", async () => {
-  // console.log("Realtime update received");
-
+socket.on("stranded-train-updated", async (data) => {
   await refreshData();
+
+  const me = await getCurrentUser();
+
+  if (data.updatedBy === me.username) return;
+
+  if (
+    isTrainModalOpen() &&
+    form.dataset.mode === "edit" &&
+    form.dataset.databaseId == data.id
+  ) {
+    document.getElementById("btn-refresh-record").classList.remove("hidden");
+    myAlert.render("This record has been updated by another user.", "info", 5);
+  }
 });

@@ -72,6 +72,21 @@
   color: silver;
 }
 
+.modal-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.modal-btn:hover {
+  color: silver;
+}
+
 /* Form body */
 .modal-form {
   padding: 20px;

@@ -192,6 +192,11 @@ class Router {
 
         const existing = await dataController.getById(id);
 
+        socketManager.getIo().emit("stranded-train-updated", {
+          id,
+          updatedBy: req.user.username,
+        });
+
         // ownership check
         if (!auth.canEditRecord(req.user, existing)) {
           res.writeHead(403, { "Content-Type": "application/json" });
