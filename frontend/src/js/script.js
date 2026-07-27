@@ -205,8 +205,6 @@ document.addEventListener("click", async (e) => {
       return;
     }
 
-    console.log(strandedTrain);
-
     if (strandedTrain.canEdit) {
       myForm.enableForm(form);
     } else {
@@ -214,21 +212,13 @@ document.addEventListener("click", async (e) => {
       myAlert.render(
         `You don't have edit rights to this record - Only '${strandedTrain.createdByRole}' users can edit this record`,
         "info",
-        4,
+        3,
       );
     }
 
     // const data = strandedTrains[index];
     myForm.setFormMode(form, "edit");
     myForm.setId(form, id);
-
-    // const me = await getCurrentUser();
-
-    // if (me.role === "viewer") {
-    //   myForm.disableForm(form);
-    // } else {
-    //   myForm.enableForm(form);
-    // }
 
     openModal();
 
