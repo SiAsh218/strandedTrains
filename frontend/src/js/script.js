@@ -101,6 +101,14 @@ loginForm.addEventListener("submit", async (e) => {
 // Click listener for table rows and buttons
 // =========================
 document.addEventListener("click", async (e) => {
+  // Navigate back to admin form if edit users form being closed
+  const backButton = e.target.closest("#btn-back-to-users");
+  if (backButton) {
+    document.getElementById("modalEditUserBackdrop").classList.add("hidden");
+    document.getElementById("modalUsersBackdrop").classList.remove("hidden");
+    return;
+  }
+
   const closeModalEl = e.target.closest(".modal-close");
 
   if (closeModalEl) {
