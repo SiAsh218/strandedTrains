@@ -219,29 +219,6 @@
           <button class="modal-close" type="button">✕</button>
         </div>
           <form class="modal-form" autocomplete="off" id="form-create-user">
-            <h3>Existing Users</h3>
-
-            <div class="form-group">
-              <input type="text" id="input-user-search" placeholder="Search username or role..." autocomplete="off"/>
-            </div>
-
-            <table
-              id="table-users"
-              class="table--stranded-trains"
-              style="font-size: 0.9rem"
-            >
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th>Active</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody id="table-users-body"></tbody>
-            </table>
-
             <h3>Create User</h3>
 
             <div class="form-group-row">
@@ -274,6 +251,29 @@
             <div class="modal-footer">
               <button type="submit" class="btn">Create User</button>
             </div>
+            
+            <h3>Existing Users</h3>
+
+            <div class="form-group">
+              <input type="text" id="input-user-search" placeholder="Search username or role..." autocomplete="off"/>
+            </div>
+
+            <table
+              id="table-users"
+              class="table--stranded-trains"
+              style="font-size: 0.9rem"
+            >
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Active</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="table-users-body"></tbody>
+            </table>
           </form>
         </div>
       </div>
