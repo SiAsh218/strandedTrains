@@ -433,7 +433,7 @@ socket.on("stranded-train-updated", async (data) => {
 
   const me = await getCurrentUser();
 
-  if (data.updatedBy === me.username) return;
+  if (me && data.updatedBy === me.username) return;
 
   if (
     isTrainModalOpen() &&

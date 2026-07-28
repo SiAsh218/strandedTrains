@@ -170,7 +170,10 @@ class Router {
 
         const result = await dataController.create(body);
 
-        socketManager.getIo().emit("stranded-trains-updated");
+        socketManager.getIo().emit("stranded-train-updated", {
+          id: result.lastInsertRowid,
+          updatedBy: req.user.username,
+        });
 
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(
@@ -192,11 +195,6 @@ class Router {
 
         const existing = await dataController.getById(id);
 
-        socketManager.getIo().emit("stranded-train-updated", {
-          id,
-          updatedBy: req.user.username,
-        });
-
         // ownership check
         if (!auth.canEditRecord(req.user, existing)) {
           res.writeHead(403, { "Content-Type": "application/json" });
@@ -213,7 +211,10 @@ class Router {
 
         const result = await dataController.update(id, body);
 
-        socketManager.getIo().emit("stranded-trains-updated");
+        socketManager.getIo().emit("stranded-train-updated", {
+          id,
+          updatedBy: req.user.username,
+        });
 
         res.writeHead(200, { "Content-Type": "application/json" });
         return res.end(
