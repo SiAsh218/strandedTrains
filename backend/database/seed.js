@@ -28,11 +28,11 @@ const seedUsers = async () => {
       password: process.env.GTS_PASSWORD,
       role: "gts",
     },
-    {
-      username: "testuser",
-      password: process.env.TEST_USER_PASSWORD,
-      role: "gwr",
-    },
+    // {
+    //   username: "testuser",
+    //   password: process.env.TEST_USER_PASSWORD,
+    //   role: "gwr",
+    // },
   ];
 
   for (const user of users) {
