@@ -1,6 +1,8 @@
 node_modules
 dist
 backend/database/app.db
+backend\database\app.db-shm
+backend/database/app.db-wal
 passwordGenerator.js
 .env
 
