@@ -427,11 +427,11 @@ eventSource.addEventListener("stranded-train-updated", async (event) => {
 
   await refreshData();
 
-  const me = await getCurrentUser();
+  // const me = await getCurrentUser();
 
-  if (me && data.updatedBy === me.username) {
-    return;
-  }
+  // if (me && data.updatedBy === me.username) {
+  //   return;
+  // }
 
   if (
     isTrainModalOpen() &&
@@ -439,8 +439,6 @@ eventSource.addEventListener("stranded-train-updated", async (event) => {
     form.dataset.databaseId == data.id
   ) {
     document.getElementById("btn-refresh-record").classList.remove("hidden");
-
-    myAlert.render("This record has been updated by another user.", "info", 5);
   }
 });
 

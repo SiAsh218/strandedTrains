@@ -213,7 +213,7 @@ class Router {
         const result = await dataController.update(id, body);
 
         sseManager.broadcast("stranded-train-updated", {
-          id: result.lastInsertRowid,
+          id,
           updatedBy: req.user.username,
         });
 

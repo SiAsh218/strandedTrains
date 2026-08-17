@@ -61,8 +61,6 @@ table tr:last-child td {
   color: #16a34a;
 }
 
-/*
-
 @keyframes flash-red {
   0% {
     background-color: inherit;
@@ -74,6 +72,8 @@ table tr:last-child td {
     background-color: inherit;
   }
 }
+
+/*
 
 .flashing-red {
   animation: flash-red 1s infinite;
@@ -131,4 +131,8 @@ table tr:last-child td {
 .flashing-amber {
   animation: pulse-amber 2.5s ease-in-out infinite;
   font-weight: bold;
+}
+
+.flashing-bright-red {
+  animation: flash-red 1s infinite;
 }
