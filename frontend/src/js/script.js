@@ -8,8 +8,6 @@
 // Import dependencies
 // =========================
 
-import { io } from "socket.io-client";
-
 import myAlert from "./alert";
 import myTable from "./table";
 import myForm from "./form";
@@ -422,18 +420,18 @@ refreshData();
 // LOOP TO UPDATE DURATIONS EVERY MINUTE
 startSynchronizedUpdates();
 
-const socket = io();
+const eventSource = new EventSource("/api/events");
 
-socket.on("connect", () => {
-  // console.log("Socket connected");
-});
+eventSource.addEventListener("stranded-train-updated", async (event) => {
+  const data = JSON.parse(event.data);
 
-socket.on("stranded-train-updated", async (data) => {
   await refreshData();
 
   const me = await getCurrentUser();
 
-  if (me && data.updatedBy === me.username) return;
+  if (me && data.updatedBy === me.username) {
+    return;
+  }
 
   if (
     isTrainModalOpen() &&
@@ -441,6 +439,11 @@ socket.on("stranded-train-updated", async (data) => {
     form.dataset.databaseId == data.id
   ) {
     document.getElementById("btn-refresh-record").classList.remove("hidden");
+
     myAlert.render("This record has been updated by another user.", "info", 5);
   }
 });
+
+eventSource.onerror = () => {
+  console.warn("SSE connection lost. Reconnecting...");
+};

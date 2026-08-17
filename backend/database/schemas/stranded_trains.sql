@@ -75,3 +75,7 @@ CREATE TABLE IF NOT EXISTS users (
   createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
   updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Reporting queries
+CREATE INDEX IF NOT EXISTS idx_stranded_trains_created_deleted
+ON stranded_trains(createdAt, deleted);

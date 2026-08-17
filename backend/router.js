@@ -4,7 +4,8 @@
 
 const path = require("path");
 
-const socketManager = require("./socketManager");
+const sseManager = require("./sseManager");
+
 const usersRepository = require("./database/usersRepository");
 const bcrypt = require("bcrypt");
 
@@ -170,7 +171,7 @@ class Router {
 
         const result = await dataController.create(body);
 
-        socketManager.getIo().emit("stranded-train-updated", {
+        sseManager.broadcast("stranded-train-updated", {
           id: result.lastInsertRowid,
           updatedBy: req.user.username,
         });
@@ -211,8 +212,8 @@ class Router {
 
         const result = await dataController.update(id, body);
 
-        socketManager.getIo().emit("stranded-train-updated", {
-          id,
+        sseManager.broadcast("stranded-train-updated", {
+          id: result.lastInsertRowid,
           updatedBy: req.user.username,
         });
 
@@ -477,6 +478,20 @@ class Router {
             success: true,
           }),
         );
+      }
+      // SSE Manager
+      else if (req.url === "/api/events" && req.method === "GET") {
+        res.writeHead(200, {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        });
+
+        res.write("\n");
+
+        sseManager.addClient(res);
+
+        return;
       }
 
       // =========================

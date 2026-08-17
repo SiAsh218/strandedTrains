@@ -3,13 +3,6 @@ const usersRepository = require("./database/usersRepository.js");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
-const SERVICE_USERS = {
-  powerbi: {
-    username: "powerbi",
-    role: "viewer",
-  },
-};
-
 // =========================
 // ROLE PERMISSIONS
 // =========================
@@ -29,13 +22,45 @@ const sessions = new Map();
 // =========================
 const parseCookies = (req) => {
   const header = req.headers.cookie;
-  if (!header) return {};
+
+  if (!header) {
+    return {};
+  }
 
   return header.split(";").reduce((acc, cookie) => {
     const [key, ...v] = cookie.split("=");
+
     acc[key.trim()] = decodeURIComponent(v.join("="));
+
     return acc;
   }, {});
+};
+
+// =========================
+// SESSION HELPERS
+// =========================
+const getSession = (sessionId) => {
+  return sessions.get(sessionId) || null;
+};
+
+// =========================
+// API USERS
+// =========================
+const getApiUser = (req) => {
+  const apiKey = req.headers["x-api-key"];
+
+  if (!apiKey) {
+    return null;
+  }
+
+  if (apiKey === process.env.POWERBI_API_KEY) {
+    return {
+      username: "powerbi",
+      role: "viewer",
+    };
+  }
+
+  return null;
 };
 
 // =========================
@@ -48,14 +73,15 @@ const getUserFromRequest = (req) => {
     return apiUser;
   }
 
-  // Existing session cookie logic
   const cookies = parseCookies(req);
+
   const sessionId = cookies.sessionId;
 
-  if (!sessionId) return null;
-  if (!sessions.has(sessionId)) return null;
+  if (!sessionId) {
+    return null;
+  }
 
-  return sessions.get(sessionId);
+  return getSession(sessionId);
 };
 
 // =========================
@@ -65,6 +91,11 @@ const authenticate = async (username, password) => {
   const user = usersRepository.getByUsername(username);
 
   if (!user) {
+    return null;
+  }
+
+  // Prevent disabled users logging in
+  if (user.active === 0) {
     return null;
   }
 
@@ -90,6 +121,7 @@ const authenticate = async (username, password) => {
 // =========================
 const logout = (req, res) => {
   const cookies = parseCookies(req);
+
   const sessionId = cookies.sessionId;
 
   if (sessionId) {
@@ -101,22 +133,27 @@ const logout = (req, res) => {
     "Content-Type": "application/json",
   });
 
-  res.end(JSON.stringify({ success: true }));
+  res.end(
+    JSON.stringify({
+      success: true,
+    }),
+  );
 };
 
-const getApiUser = (req) => {
-  const apiKey = req.headers["x-api-key"];
+// =========================
+// RESPONSE HELPERS
+// =========================
+const sendAuthError = (res) => {
+  res.writeHead(401, {
+    "Content-Type": "application/json",
+  });
 
-  if (!apiKey) return null;
-
-  if (apiKey === process.env.POWERBI_API_KEY) {
-    return {
-      username: "powerbi",
-      role: "viewer",
-    };
-  }
-
-  return null;
+  res.end(
+    JSON.stringify({
+      success: false,
+      error: "Authentication required",
+    }),
+  );
 };
 
 // =========================
@@ -131,13 +168,7 @@ const isLoggedIn = (req) => {
 // =========================
 const requireAuth = (req, res) => {
   if (!req.user) {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(
-      JSON.stringify({
-        success: false,
-        error: "Authentication required",
-      }),
-    );
+    sendAuthError(res);
     return false;
   }
 
@@ -145,18 +176,12 @@ const requireAuth = (req, res) => {
 };
 
 // =========================
-// REQUIRE PERMISSION (RBAC)
+// REQUIRE PERMISSION
 // =========================
 const requirePermission = (permissionKey) => {
   return (req, res) => {
     if (!req.user) {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          success: false,
-          error: "Authentication required",
-        }),
-      );
+      sendAuthError(res);
       return false;
     }
 
@@ -167,13 +192,17 @@ const requirePermission = (permissionKey) => {
     }
 
     if (!allowedRoles.includes(req.user.role)) {
-      res.writeHead(403, { "Content-Type": "application/json" });
+      res.writeHead(403, {
+        "Content-Type": "application/json",
+      });
+
       res.end(
         JSON.stringify({
           success: false,
           error: "Forbidden",
         }),
       );
+
       return false;
     }
 
@@ -186,17 +215,26 @@ const requirePermission = (permissionKey) => {
 // =========================
 const hasRole = (req, roles = []) => {
   const user = getUserFromRequest(req);
-  if (!user) return false;
+
+  if (!user) {
+    return false;
+  }
+
   return roles.includes(user.role);
 };
 
+// =========================
+// RECORD OWNERSHIP
+// =========================
 const canEditRecord = (user, record) => {
-  if (!user || !record) return false;
+  if (!user || !record) {
+    return false;
+  }
 
-  // admin can edit everything
-  if (user.role === "admin") return true;
+  if (user.role === "admin") {
+    return true;
+  }
 
-  // must match creator role
   return user.role === record.createdByRole;
 };
 

@@ -89,7 +89,7 @@ class StrandedTrainModel {
     return await db.getWhereSelect(
       TABLE,
       SAFE_COLUMNS,
-      "DATE(createdAt) >= DATE(?) AND DATE(createdAt) <= DATE(?) AND deleted = ?",
+      "createdAt >= ? AND createdAt <= ? AND deleted = ?",
       [from, to, 0],
     );
   }

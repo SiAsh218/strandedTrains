@@ -7,13 +7,10 @@
 const config = require("../config.json");
 require("dotenv").config();
 
-const { Server } = require("socket.io");
-const socketManager = require("./socketManager");
 const { seedUsers } = require("./database/seed.js");
 
 const http = require("http");
 const path = require("path");
-const url = require("url");
 const fs = require("fs");
 const router = require("./router.js");
 const db = require("../backend/database/sqlite.js");
@@ -25,7 +22,7 @@ class App {
     this.staticFilePath = path.join("..", "./frontend/");
 
     // Handle uncaught exceptions
-    process.on("unhandledRejection", (reason, p) => {
+    process.on("unhandledRejection", (reason) => {
       console.error(reason);
     });
   }
@@ -47,18 +44,6 @@ class App {
       } else {
         this.runHTTP("development");
       }
-
-      const io = new Server(this.server);
-
-      socketManager.initialise(io);
-
-      io.on("connection", (socket) => {
-        console.log(`Socket connected: ${socket.id}`);
-
-        socket.on("disconnect", () => {
-          console.log(`Socket disconnected: ${socket.id}`);
-        });
-      });
 
       this.server.listen(this.port, this.host, () => {
         console.log(
@@ -91,29 +76,6 @@ class App {
   }
 
   /**
-   * Method to run server on HTTPS
-   */
-  runHTTPS() {
-    this.mode = "production";
-    this.host = config.prod.ip;
-
-    const options = {
-      key: fs.readFileSync("SSL/key.txt"),
-      cert: fs.readFileSync("SSL/cert.txt"),
-    };
-
-    this.server = https.createServer(options, (req, res) => {
-      const isStatic = this._serveStaticFiles(req, res);
-      if (isStatic) return;
-
-      const parsedUrl = url.parse(req.url, true);
-      req.query = parsedUrl.query;
-
-      router.route(req, res);
-    });
-  }
-
-  /**
    * Method to serve static files
    * @param {Object} req request object
    * @param {Object} res response object
@@ -127,6 +89,12 @@ class App {
     }
 
     const filePath = this._getPath(req.url);
+
+    if (!filePath) {
+      res.writeHead(403);
+      res.end("Forbidden");
+      return true;
+    }
 
     const contentType = this._getContentType(req);
 
