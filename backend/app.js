@@ -7,7 +7,7 @@
 const config = require("../config.json");
 require("dotenv").config();
 
-const { seedUsers } = require("./database/seed.js");
+const { seedRoles, seedUsers } = require("./database/seed.js");
 
 const http = require("http");
 const path = require("path");
@@ -35,6 +35,7 @@ class App {
       // Initialise database FIRST
       await db.initialise(config.resetDatabase);
 
+      await seedRoles();
       await seedUsers();
 
       // Start server

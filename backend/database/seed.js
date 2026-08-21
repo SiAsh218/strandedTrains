@@ -1,5 +1,44 @@
 const bcrypt = require("bcrypt");
 const db = require("./sqlite.js");
+const rolesRepository = require("./rolesRepository.js");
+
+const seedRoles = () => {
+  const roles = [
+    {
+      name: "admin",
+      description: "Full system administrator",
+      permissions: ["read", "write", "admin"],
+    },
+    {
+      name: "gwr",
+      description: "GWR user",
+      permissions: ["read", "write"],
+    },
+    {
+      name: "xc",
+      description: "CrossCountry user",
+      permissions: ["read", "write"],
+    },
+    {
+      name: "gts",
+      description: "GTS user",
+      permissions: ["read", "write"],
+    },
+    {
+      name: "viewer",
+      description: "Read-only user",
+      permissions: ["read"],
+    },
+  ];
+
+  for (const role of roles) {
+    const existingRole = rolesRepository.getByName(role.name);
+
+    if (!existingRole) {
+      rolesRepository.create(role);
+    }
+  }
+};
 
 const seedUsers = async () => {
   const users = [
@@ -67,5 +106,6 @@ const seedUsers = async () => {
 };
 
 module.exports = {
+  seedRoles,
   seedUsers,
 };

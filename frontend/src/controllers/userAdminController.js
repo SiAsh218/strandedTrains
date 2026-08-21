@@ -19,7 +19,33 @@ const initUserAdmin = () => {
     .addEventListener("input", filterUsersTable);
 };
 
+const loadRoles = async () => {
+  const roles = await userService.getRoles();
+
+  const createRoleSelect = document.getElementById("user-role");
+  const editRoleSelect = document.getElementById("edit-user-role");
+
+  const populateRoleSelect = (select) => {
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    roles.forEach((role) => {
+      const option = document.createElement("option");
+
+      option.value = role.name;
+      option.textContent = role.name;
+
+      select.appendChild(option);
+    });
+  };
+
+  populateRoleSelect(createRoleSelect);
+  populateRoleSelect(editRoleSelect);
+};
+
 const handleOpenUserAdmin = async () => {
+  await loadRoles();
   await refreshUsersTable();
 
   clearUserSearch();

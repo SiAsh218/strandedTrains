@@ -76,6 +76,20 @@ CREATE TABLE IF NOT EXISTS users (
   updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ============================================================
+-- Roles
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS roles (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  description TEXT,
+  permissions TEXT NOT NULL DEFAULT '[]',
+  active INTEGER NOT NULL DEFAULT 1,
+  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Reporting queries
 CREATE INDEX IF NOT EXISTS idx_stranded_trains_created_deleted
 ON stranded_trains(createdAt, deleted);

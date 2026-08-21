@@ -1,4 +1,5 @@
 const usersRepository = require("./database/usersRepository.js");
+const rolesRepository = require("./database/rolesRepository.js");
 
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
@@ -6,11 +7,11 @@ const bcrypt = require("bcrypt");
 // =========================
 // ROLE PERMISSIONS
 // =========================
-const PERMISSIONS = {
-  read: ["admin", "gwr", "xc", "gts", "viewer"],
-  write: ["admin", "gwr", "xc", "gts"],
-  admin: ["admin"],
-};
+// const PERMISSIONS = {
+//   read: ["admin", "gwr", "xc", "gts", "viewer"],
+//   write: ["admin", "gwr", "xc", "gts"],
+//   admin: ["admin"],
+// };
 
 // =========================
 // SESSION STORE
@@ -185,13 +186,12 @@ const requirePermission = (permissionKey) => {
       return false;
     }
 
-    const allowedRoles = PERMISSIONS[permissionKey];
+    const hasPermission = rolesRepository.hasPermission(
+      req.user.role,
+      permissionKey,
+    );
 
-    if (!allowedRoles) {
-      throw new Error(`Unknown permission: ${permissionKey}`);
-    }
-
-    if (!allowedRoles.includes(req.user.role)) {
+    if (!hasPermission) {
       res.writeHead(403, {
         "Content-Type": "application/json",
       });

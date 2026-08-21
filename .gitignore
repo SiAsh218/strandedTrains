@@ -5,4 +5,5 @@ backend\database\app.db-shm
 backend/database/app.db-wal
 passwordGenerator.js
 .env
+test.hhtp
 

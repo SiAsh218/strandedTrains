@@ -7,6 +7,7 @@ const path = require("path");
 const sseManager = require("./sseManager");
 
 const usersRepository = require("./database/usersRepository");
+const rolesRepository = require("./database/rolesRepository");
 const bcrypt = require("bcrypt");
 
 const viewController = require("./controllers/viewController.js");
@@ -246,6 +247,115 @@ class Router {
       // USER MANAGEMENT
       // =========================
 
+      // =========================
+      // ROLE MANAGEMENT
+      // =========================
+
+      // GET ACTIVE ROLES
+      else if (req.url === "/api/roles" && req.method === "GET") {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const roles = rolesRepository.getActive();
+
+        res.writeHead(200, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(JSON.stringify(roles));
+      }
+
+      // CREATE ROLE
+      else if (req.url === "/api/roles" && req.method === "POST") {
+        if (!auth.requirePermission("admin")(req, res)) return;
+
+        const body = await dataController.parseBody(req);
+
+        // Validate role name
+        if (!body.name || !body.name.trim()) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Role name is required",
+            }),
+          );
+        }
+
+        const name = body.name.trim().toLowerCase();
+
+        // Validate permissions
+        if (!Array.isArray(body.permissions)) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Permissions must be an array",
+            }),
+          );
+        }
+
+        // Only allow permissions that the application understands
+        const allowedPermissions = ["read", "write", "admin"];
+
+        const invalidPermissions = body.permissions.filter(
+          (permission) => !allowedPermissions.includes(permission),
+        );
+
+        if (invalidPermissions.length > 0) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: `Invalid permissions: ${invalidPermissions.join(", ")}`,
+            }),
+          );
+        }
+
+        // Prevent duplicate role names
+        if (rolesRepository.getByName(name)) {
+          res.writeHead(409, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Role already exists",
+            }),
+          );
+        }
+
+        const result = rolesRepository.create({
+          name,
+          description: body.description || null,
+          permissions: body.permissions,
+        });
+
+        res.writeHead(201, {
+          "Content-Type": "application/json",
+        });
+
+        return res.end(
+          JSON.stringify({
+            success: true,
+            id: result.lastInsertRowid,
+          }),
+        );
+      }
+
+      // =========================
+      // USER MANAGEMENT
+      // =========================
+
       // GET ALL USERS
       else if (req.url === "/api/users" && req.method === "GET") {
         if (!auth.requirePermission("admin")(req, res)) return;
@@ -314,6 +424,21 @@ class Router {
             JSON.stringify({
               success: false,
               error: "Role is required",
+            }),
+          );
+        }
+
+        const role = rolesRepository.getByName(body.role);
+
+        if (!role || !role.active) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Invalid or inactive role",
             }),
           );
         }
@@ -423,13 +548,24 @@ class Router {
         if (!auth.requirePermission("admin")(req, res)) return;
 
         const id = req.url.split("/").pop();
-
         const body = await dataController.parseBody(req);
-
         const existingUser = usersRepository.getById(id);
+        const role = rolesRepository.getByName(body.role);
+
+        if (!role || !role.active) {
+          res.writeHead(400, {
+            "Content-Type": "application/json",
+          });
+
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "Invalid or inactive role",
+            }),
+          );
+        }
 
         const activeAdminCount = usersRepository.getActiveAdminCount();
-
         const active = Number(body.active);
 
         const removingLastAdmin =

@@ -4,6 +4,16 @@ const getUsers = async () => {
   return response.json();
 };
 
+const getRoles = async () => {
+  const response = await fetch("/api/roles");
+
+  if (!response.ok) {
+    throw new Error("Failed to load roles");
+  }
+
+  return response.json();
+};
+
 const getUserById = async (id) => {
   const response = await fetch(`/api/users/${id}`);
 
@@ -50,6 +60,7 @@ const resetPassword = async (id, password) => {
 
 export default {
   getUsers,
+  getRoles,
   createUser,
   getUserById,
   updateUser,
