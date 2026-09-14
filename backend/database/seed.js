@@ -25,6 +25,11 @@ const seedRoles = () => {
       permissions: ["read", "write"],
     },
     {
+      name: "nr",
+      description: "Network Rail user",
+      permissions: ["read", "write"],
+    },
+    {
       name: "viewer",
       description: "Read-only user",
       permissions: ["read"],

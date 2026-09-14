@@ -235,7 +235,11 @@ const canEditRecord = (user, record) => {
     return true;
   }
 
-  return user.role === record.createdByRole;
+  return user.role === record.operator;
+};
+
+const canSetOperator = (user) => {
+  return user?.role === "nr" || user?.role === "admin";
 };
 
 // =========================
@@ -250,4 +254,5 @@ module.exports = {
   hasRole,
   getUserFromRequest,
   canEditRecord,
+  canSetOperator,
 };

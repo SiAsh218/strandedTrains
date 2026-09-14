@@ -102,6 +102,7 @@ class Form {
       lastContactPerson: this.getInputValuebyId("input--last-contact-person"),
       contactRecord:
         `${this.getInputValuebyId("input--contact-record")}${this.lastUpdatedInfoChanged() ? `\n${this.formatLastUpdatedInfo()}` : ""}`.trim(),
+      operator: this.getInputValuebyId("input--operator"),
       showDeletionFlag: this.getInputValuebyId("input--status") === "Resolved",
       lastUpdated: new Date().toISOString(),
     };
@@ -159,9 +160,9 @@ class Form {
     form.querySelector("#input--last-updated").value = new Date(
       data.lastUpdated,
     ).toLocaleString();
-    form.querySelector("#input--created-by").value = data.createdByRole;
+    form.querySelector("#input--operator").value = data.operator;
     form.querySelector("#form-group--last-updated").classList.remove("hidden");
-    form.querySelector("#form-group--created-by").classList.remove("hidden");
+    form.querySelector("#form-group--operator").classList.remove("hidden");
   }
 
   /**

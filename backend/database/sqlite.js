@@ -39,6 +39,21 @@ class SQLiteDatabase {
 
     this.db.exec(schema);
 
+    const strandedTrainColumns = this.db
+      .prepare("PRAGMA table_info(stranded_trains)")
+      .all();
+    const hasOperatorColumn = strandedTrainColumns.some(
+      (column) => column.name === "operator",
+    );
+
+    if (!hasOperatorColumn) {
+      this.db.exec("ALTER TABLE stranded_trains ADD COLUMN operator TEXT");
+    }
+
+    this.db.exec(
+      "UPDATE stranded_trains SET operator = createdByRole WHERE operator IS NULL",
+    );
+
     console.log("Database initialised");
   }
 

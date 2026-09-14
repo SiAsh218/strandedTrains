@@ -873,7 +873,7 @@
             </div>
 
             <div
-              class="form-group hidden form-group--last-updated"
+              class="form-group form-group--last-updated"
               id="form-group--last-updated"
             >
               <label for="input--last-updated">Last Updated</label>
@@ -884,14 +884,17 @@
                 disabled
               />
             </div>
-            <div class="form-group hidden" id="form-group--created-by">
-              <label for="input--created-by">Created By User</label>
-              <input
-                type="text"
-                id="input--created-by"
-                name="created-by"
-                disabled
-              />
+            <div class="form-group" id="form-group--operator">
+              <label
+                class="required"
+                for="input--operator"
+                data-error="Operator is a required field"
+                >Operator</label
+              >
+              <select
+                id="input--operator"
+                name="operator"
+              ></select>
             </div>
             <div class="form-group"></div>
           </div>

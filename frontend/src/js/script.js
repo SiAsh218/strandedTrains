@@ -31,8 +31,52 @@ const statusSelect = form.querySelector("#input--status");
 const strandedAtInput = form.querySelector("#input--stranded-at");
 const rescuedAtInput = form.querySelector("#input--rescued-at");
 const devTimeInput = document.getElementById("date-time--dev");
+const operatorSelect = form.querySelector("#input--operator");
 
 let strandedTrains = [];
+let currentUserRole = "viewer";
+
+const canSetOperator = () =>
+  currentUserRole === "nr" || currentUserRole === "admin";
+const canChangeOperatorOnEdit = () => currentUserRole === "admin";
+const excludedOperatorRoles = new Set(["admin", "nr", "viewer"]);
+
+const initialiseOperatorSelect = async () => {
+  const [userResponse, rolesResponse] = await Promise.all([
+    getCurrentUser(),
+    fetch("/api/roles"),
+  ]);
+
+  currentUserRole = userResponse.role || "viewer";
+  const roles = rolesResponse.ok ? await rolesResponse.json() : [];
+  const availableRoles = roles.filter(
+    (role) => !excludedOperatorRoles.has(role.name),
+  );
+  const blankOption = document.createElement("option");
+  blankOption.value = "";
+  blankOption.textContent = "";
+
+  operatorSelect.replaceChildren(
+    blankOption,
+    ...availableRoles.map((role) => {
+      const option = document.createElement("option");
+      option.value = role.name;
+      option.textContent = role.name;
+      return option;
+    }),
+  );
+
+  operatorSelect.disabled = !canSetOperator();
+  operatorSelect.value = availableRoles.some(
+    (role) => role.name === currentUserRole,
+  )
+    ? currentUserRole
+    : availableRoles[0]?.name || "";
+};
+
+initialiseOperatorSelect().catch((error) => {
+  console.error("Failed to initialise operator select:", error);
+});
 
 // =========================
 // Event Listeners
@@ -122,9 +166,12 @@ document.addEventListener("click", async (e) => {
     if (button.id === "btn-add") {
       form.dataset.mode = "new";
       form.dataset.databaseId = "";
-      form.querySelector("#form-group--last-updated").classList.add("hidden");
-      form.querySelector("#form-group--created-by").classList.add("hidden");
+      form
+        .querySelector("#form-group--last-updated")
+        .classList.remove("hidden");
       myForm.enableForm(form);
+      operatorSelect.disabled = !canSetOperator();
+      operatorSelect.value = canSetOperator() ? "" : currentUserRole;
       setInputToNow(strandedAtInput);
       openModal();
       document.getElementById("input--headcode").focus();
@@ -214,7 +261,7 @@ document.addEventListener("click", async (e) => {
     } else {
       myForm.disableForm(form);
       myAlert.render(
-        `You don't have edit rights to this record - Only '${strandedTrain.createdByRole}' users can edit this record`,
+        `You don't have edit rights to this record - Only '${strandedTrain.operator}' users can edit this record`,
         "info",
         3,
       );
@@ -227,6 +274,7 @@ document.addEventListener("click", async (e) => {
     openModal();
 
     myForm.setFormData(form, strandedTrain);
+    operatorSelect.disabled = !canChangeOperatorOnEdit();
   }
 });
 

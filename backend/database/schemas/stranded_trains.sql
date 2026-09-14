@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS stranded_trains (
   contactRecord TEXT,
 
   updatedByRole TEXT,
+  operator TEXT,
   createdByRole TEXT,
 
   showDeletionFlag INTEGER,

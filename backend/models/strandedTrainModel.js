@@ -49,6 +49,7 @@ const SAFE_COLUMNS = `
   lastContactPerson,
   contactRecord,
   updatedByRole,
+  operator,
   createdByRole,
   showDeletionFlag,
   lastUpdated,

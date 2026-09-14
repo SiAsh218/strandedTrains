@@ -119,7 +119,7 @@ class Router {
           data.championNo = "";
         } else if (
           req.user.role !== "admin" &&
-          data.createdByRole !== req.user.role
+          data.operator !== req.user.role
         ) {
           data.contactNo = "";
           data.responderNo = "";
@@ -168,7 +168,24 @@ class Router {
         const body = await dataController.parseBody(req);
 
         body.updatedByRole = req.user.role;
-        body.createdByRole = req.user.role;
+        const requestedOperator = auth.canSetOperator(req.user)
+          ? body.operator
+          : req.user.role;
+        const operatorRole = rolesRepository.getByName(requestedOperator);
+
+        if (auth.canSetOperator(req.user) && !operatorRole?.active) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          return res.end(
+            JSON.stringify({
+              success: false,
+              error: "An active operator must be selected",
+            }),
+          );
+        }
+
+        body.operator = operatorRole?.active
+          ? requestedOperator
+          : req.user.role;
 
         const result = await dataController.create(body);
 
@@ -203,13 +220,20 @@ class Router {
           return res.end(
             JSON.stringify({
               success: false,
-              error: `Entry was created by user with role '${existing.createdByRole}' you don't have permission to edit this entry`,
+              error: `Entry is assigned to operator '${existing.operator}' and you don't have permission to edit this entry`,
             }),
           );
         }
 
         const body = await dataController.parseBody(req);
         body.updatedByRole = req.user.role;
+
+        if (
+          req.user.role !== "admin" ||
+          !rolesRepository.getByName(body.operator)?.active
+        ) {
+          delete body.operator;
+        }
 
         const result = await dataController.update(id, body);
 
@@ -253,7 +277,7 @@ class Router {
 
       // GET ACTIVE ROLES
       else if (req.url === "/api/roles" && req.method === "GET") {
-        if (!auth.requirePermission("admin")(req, res)) return;
+        if (!auth.requirePermission("read")(req, res)) return;
 
         const roles = rolesRepository.getActive();
 
