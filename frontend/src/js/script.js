@@ -218,6 +218,13 @@ document.addEventListener("click", async (e) => {
             await strandedTrainsService.deleteStrandedTrain(databaseId);
 
           if (!result.success) {
+            if (result.unauthorized) {
+              document
+                .getElementById("modalLoginBackdrop")
+                .classList.remove("hidden");
+              return;
+            }
+
             myAlert.render(
               result.result.error || "Failed to delete entry",
               "error",
@@ -357,6 +364,13 @@ const addStrandedTrain = async (mode, data) => {
     );
 
     if (!result.success) {
+      if (result.unauthorized) {
+        document
+          .getElementById("modalLoginBackdrop")
+          .classList.remove("hidden");
+        return false;
+      }
+
       myAlert.render(result.result.error || "Failed to save entry", "error", 3);
 
       return false;

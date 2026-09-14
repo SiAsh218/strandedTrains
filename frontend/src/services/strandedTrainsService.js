@@ -75,6 +75,7 @@ export const saveStrandedTrain = async (mode, id, data) => {
 
     return {
       success: response.ok,
+      unauthorized: response.status === 401,
       result,
     };
   } catch (error) {
@@ -82,6 +83,7 @@ export const saveStrandedTrain = async (mode, id, data) => {
 
     return {
       success: false,
+      unauthorized: false,
       result: {
         error: "Failed to save stranded train",
       },
@@ -105,6 +107,7 @@ export const deleteStrandedTrain = async (id) => {
 
     return {
       success: response.ok,
+      unauthorized: response.status === 401,
       result,
     };
   } catch (error) {
@@ -112,6 +115,7 @@ export const deleteStrandedTrain = async (id) => {
 
     return {
       success: false,
+      unauthorized: false,
       result: {
         error: "Failed to delete train",
       },

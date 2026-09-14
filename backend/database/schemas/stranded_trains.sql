@@ -77,6 +77,13 @@ CREATE TABLE IF NOT EXISTS users (
   updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS sessions (
+  sessionId TEXT PRIMARY KEY,
+  username TEXT NOT NULL,
+  role TEXT NOT NULL,
+  createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ============================================================
 -- Roles
 -- ============================================================

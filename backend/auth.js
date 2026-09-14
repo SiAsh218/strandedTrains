@@ -1,5 +1,6 @@
 const usersRepository = require("./database/usersRepository.js");
 const rolesRepository = require("./database/rolesRepository.js");
+const db = require("./database/sqlite.js");
 
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
@@ -16,8 +17,6 @@ const bcrypt = require("bcrypt");
 // =========================
 // SESSION STORE
 // =========================
-const sessions = new Map();
-
 // =========================
 // COOKIE PARSER
 // =========================
@@ -41,7 +40,15 @@ const parseCookies = (req) => {
 // SESSION HELPERS
 // =========================
 const getSession = (sessionId) => {
-  return sessions.get(sessionId) || null;
+  return db
+    .prepare(
+      `
+      SELECT username, role, createdAt AS created
+      FROM sessions
+      WHERE sessionId = ?
+      `,
+    )
+    .get(sessionId);
 };
 
 // =========================
@@ -108,11 +115,12 @@ const authenticate = async (username, password) => {
 
   const sessionId = crypto.randomUUID();
 
-  sessions.set(sessionId, {
-    username: user.username,
-    role: user.role,
-    created: Date.now(),
-  });
+  db.prepare(
+    `
+    INSERT INTO sessions (sessionId, username, role)
+    VALUES (?, ?, ?)
+    `,
+  ).run(sessionId, user.username, user.role);
 
   return sessionId;
 };
@@ -126,7 +134,7 @@ const logout = (req, res) => {
   const sessionId = cookies.sessionId;
 
   if (sessionId) {
-    sessions.delete(sessionId);
+    db.prepare("DELETE FROM sessions WHERE sessionId = ?").run(sessionId);
   }
 
   res.writeHead(200, {
